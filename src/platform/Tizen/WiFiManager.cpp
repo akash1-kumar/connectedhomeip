@@ -694,6 +694,27 @@ exit:
     return err;
 }
 
+CHIP_ERROR WiFiManager::StartWiFiScan(ByteSpan ssid, DeviceLayer::NetworkCommissioning::WiFiDriver::ScanCallback * callback)
+{
+    CHIP_ERROR err            = CHIP_NO_ERROR;
+    int wifiErr               = WIFI_MANAGER_ERROR_NONE;
+    bool isWiFiActivated      = false;
+
+    wifiErr = wifi_manager_is_activated(sInstance.mWiFiManagerHandle, &isWiFiActivated);
+    VerifyOrExit(wifiErr == WIFI_MANAGER_ERROR_NONE, err = CHIP_ERROR_INCORRECT_STATE;
+                 ChipLogError(DeviceLayer, "FAIL: check whether WiFi is activated [%s]", get_error_message(wifiErr)));
+
+    VerifyOrExit(isWiFiActivated == true, ChipLogProgress(DeviceLayer, "WiFi is deactivated"));
+
+    sInstance.mpScanCallback = callback;
+    err = PlatformMgrImpl().GLibMatterContextInvokeSync(_WiFiScan, static_cast<void *>(nullptr));
+    SuccessOrExit(err);
+
+
+exit:
+    return err;
+}
+
 CHIP_ERROR WiFiManager::RemoveAllConfigs()
 {
     CHIP_ERROR err = CHIP_NO_ERROR;

@@ -161,7 +161,16 @@ exit:
 
 void TizenWiFiDriver::ScanNetworks(ByteSpan ssid, WiFiDriver::ScanCallback * callback)
 {
-    ChipLogError(NetworkProvisioning, "Not implemented");
+
+    CHIP_ERROR err = DeviceLayer::Internal::WiFiMgr().StartWiFiScan(ssid, callback);
+    if (err != CHIP_NO_ERROR)
+    {
+        callback->OnFinished(Status::kUnknownError, CharSpan(), nullptr);
+    }
+    else
+    {
+        callback->OnFinished(Status::kSuccess, CharSpan(), nullptr);
+    }
 }
 
 size_t TizenWiFiDriver::WiFiNetworkIterator::Count()

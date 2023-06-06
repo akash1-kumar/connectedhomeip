@@ -46,6 +46,7 @@ public:
     CHIP_ERROR Connect(const char * ssid, const char * key,
                        NetworkCommissioning::Internal::WirelessDriver::ConnectCallback * apCallback = nullptr);
     CHIP_ERROR Disconnect(const char * ssid);
+    CHIP_ERROR StartWiFiScan(ByteSpan ssid, NetworkCommissioning::WiFiDriver::ScanCallback * callback);
     CHIP_ERROR RemoveAllConfigs();
 
     CHIP_ERROR GetDeviceMACAddress(uint8_t * macAddress, size_t macAddressLen);
@@ -101,6 +102,7 @@ private:
     char mWiFiKey[kMaxWiFiKeyLength + 1];
 
     NetworkCommissioning::Internal::WirelessDriver::ConnectCallback * mpConnectCallback;
+    NetworkCommissioning::WiFiDriver::ScanCallback * mpScanCallback;
 };
 
 inline WiFiManager & WiFiMgr()
