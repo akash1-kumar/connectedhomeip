@@ -56,6 +56,8 @@ public:
     CHIP_ERROR GetConnectionState(wifi_manager_connection_state_e * connectionState);
     CHIP_ERROR GetBssId(uint8_t * bssId);
     CHIP_ERROR GetSecurityType(wifi_manager_security_type_e * securityType);
+    CHIP_ERROR GetConfiguredNetwork(NetworkCommissioning::Network & network);
+    bool IsWiFiStationConnected();
 
 private:
     static void _DeviceStateChangedCb(wifi_manager_device_state_e deviceState, void * userData);
@@ -67,7 +69,9 @@ private:
     static void _IPConflictCb(char * mac, wifi_manager_ip_conflict_state_e ipConflictState, void * userData);
     static void _ActivateCb(wifi_manager_error_e wifiErr, void * userData);
     static void _DeactivateCb(wifi_manager_error_e wifiErr, void * userData);
+    static void _ScanToConnectFinishedCb(wifi_manager_error_e wifiErr, void * userData);
     static void _ScanFinishedCb(wifi_manager_error_e wifiErr, void * userData);
+    static bool _FoundAPOnScanCb(wifi_manager_ap_h ap, void * userData);
     static bool _FoundAPCb(wifi_manager_ap_h ap, void * userData);
     static void _ConnectedCb(wifi_manager_error_e wifiErr, void * userData);
     static bool _ConfigListCb(const wifi_manager_config_h config, void * userData);
@@ -76,6 +80,7 @@ private:
     static CHIP_ERROR _WiFiActivate(gpointer userData);
     static CHIP_ERROR _WiFiDeactivate(gpointer userData);
     static CHIP_ERROR _WiFiScan(gpointer userData);
+    static CHIP_ERROR _WiFiScanToConnect(gpointer userData);
     static CHIP_ERROR _WiFiConnect(wifi_manager_ap_h ap);
 
     void _WiFiDeinitialize();

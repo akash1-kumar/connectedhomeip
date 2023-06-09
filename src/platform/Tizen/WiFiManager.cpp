@@ -30,6 +30,9 @@
 #include <lib/support/Span.h>
 #include <lib/support/logging/CHIPLogging.h>
 #include <platform/PlatformManager.h>
+#include <platform/Tizen/NetworkCommissioningDriver.h>
+
+using namespace ::chip::DeviceLayer::NetworkCommissioning;
 
 namespace {
 static constexpr const char * __WiFiDeviceStateToStr(wifi_manager_device_state_e state)
@@ -129,6 +132,128 @@ static constexpr const char * __WiFiSecurityTypeToStr(wifi_manager_security_type
         return "(unknown)";
     }
 }
+
+// wifi_manager's scan results don't contains the channel infomation, so we need this lookup table for resolving the band and
+// channel infomation.
+std::pair<WiFiBand, int> _GetBandAndChannelFromFrequency(int freq)
+{
+    std::pair<WiFiBand, int> ret = std::make_pair(WiFiBand::k2g4, 0);
+    if (freq <= 931)
+    {
+        ret.first = WiFiBand::k1g;
+        if (freq >= 916)
+        {
+            ret.second = ((freq - 916) * 2) - 1;
+        }
+        else if (freq >= 902)
+        {
+            ret.second = (freq - 902) * 2;
+        }
+        else if (freq >= 863)
+        {
+            ret.second = (freq - 863) * 2;
+        }
+        else
+        {
+            ret.second = 1;
+        }
+    }
+    else if (freq <= 2472)
+    {
+        ret.second = static_cast<uint16_t>((freq - 2412) / 5 + 1);
+    }
+    else if (freq == 2484)
+    {
+        ret.second = 14;
+    }
+    else if (freq >= 3600 && freq <= 3700)
+    {
+        ret.first = WiFiBand::k3g65;
+    }
+    else if (freq >= 5035 && freq <= 5945)
+    {
+        ret.first  = WiFiBand::k5g;
+        ret.second = static_cast<uint16_t>((freq - 5000) / 5);
+    }
+    else if (freq == 5960 || freq == 5980)
+    {
+        ret.first  = WiFiBand::k5g;
+        ret.second = static_cast<uint16_t>((freq - 5000) / 5);
+    }
+    else if (freq >= 5955)
+    {
+        ret.first  = WiFiBand::k6g;
+        ret.second = static_cast<uint16_t>((freq - 5950) / 5);
+    }
+    else if (freq >= 58000)
+    {
+        ret.first = WiFiBand::k60g;
+        switch (freq)
+        {
+        case 58'320:
+            ret.second = 1;
+            break;
+        case 60'480:
+            ret.second = 2;
+            break;
+        case 62'640:
+            ret.second = 3;
+            break;
+        case 64'800:
+            ret.second = 4;
+            break;
+        case 66'960:
+            ret.second = 5;
+            break;
+        case 69'120:
+            ret.second = 6;
+            break;
+        case 59'400:
+            ret.second = 9;
+            break;
+        case 61'560:
+            ret.second = 10;
+            break;
+        case 63'720:
+            ret.second = 11;
+            break;
+        case 65'880:
+            ret.second = 12;
+            break;
+        case 68'040:
+            ret.second = 13;
+            break;
+        }
+    }
+    return ret;
+}
+
+uint8_t _GetNetworkSecurityType(wifi_manager_security_type_e type)
+{
+    switch (type)
+    {
+    case WIFI_MANAGER_SECURITY_TYPE_NONE:
+        return 0x1;
+    case WIFI_MANAGER_SECURITY_TYPE_WEP:
+        return 0x2;
+    case WIFI_MANAGER_SECURITY_TYPE_WPA_PSK:
+        return 0x4;
+    case WIFI_MANAGER_SECURITY_TYPE_WPA2_PSK:
+        return 0x8;
+    case WIFI_MANAGER_SECURITY_TYPE_EAP:
+        return 0x10;
+    case WIFI_MANAGER_SECURITY_TYPE_WPA_FT_PSK:
+        return 0x10;
+    case WIFI_MANAGER_SECURITY_TYPE_SAE:
+        return 0x10;
+    case WIFI_MANAGER_SECURITY_TYPE_OWE:
+        return 0x10;
+    case WIFI_MANAGER_SECURITY_TYPE_DPP:
+        return 0x10;
+    default:
+        return 0x0;
+    }
+}
 } // namespace
 
 namespace chip {
@@ -199,7 +324,7 @@ void WiFiManager::_DeactivateCb(wifi_manager_error_e wifiErr, void * userData)
     }
 }
 
-void WiFiManager::_ScanFinishedCb(wifi_manager_error_e wifiErr, void * userData)
+void WiFiManager::_ScanToConnectFinishedCb(wifi_manager_error_e wifiErr, void * userData)
 {
     wifi_manager_ap_h foundAp = nullptr;
 
@@ -217,6 +342,85 @@ void WiFiManager::_ScanFinishedCb(wifi_manager_error_e wifiErr, void * userData)
     {
         ChipLogError(DeviceLayer, "FAIL: scan WiFi [%s]", get_error_message(wifiErr));
     }
+}
+
+void WiFiManager::_ScanFinishedCb(wifi_manager_error_e wifiErr, void * userData)
+{
+    ChipLogProgress(DeviceLayer, "ScanFinished Callback..");
+
+    if (wifiErr == WIFI_MANAGER_ERROR_NONE)
+    {
+         ChipLogProgress(DeviceLayer, "WiFi scan finished");
+         std::vector<WiFiScanResponse> * networkScanned = new std::vector<WiFiScanResponse>();
+
+         int err = wifi_manager_foreach_found_ap(sInstance.mWiFiManagerHandle, _FoundAPOnScanCb, networkScanned);
+         if (err == WIFI_MANAGER_ERROR_NONE)
+         {
+             TizenScanResponseIterator<WiFiScanResponse> iter(const_cast<std::vector<WiFiScanResponse> *>(networkScanned));
+             sInstance.mpScanCallback->OnFinished(Status::kSuccess, CharSpan(), &iter);
+             sInstance.mpScanCallback = nullptr;
+         }
+         else
+         {
+             ChipLogError(DeviceLayer, "FAIL: get scan list [%s]", get_error_message(wifiErr));
+         }
+    }
+    else
+    {
+         ChipLogError(DeviceLayer, "FAIL: scan WiFi [%s]", get_error_message(wifiErr));
+    }
+}
+
+bool WiFiManager::_FoundAPOnScanCb(wifi_manager_ap_h ap, void * userData)
+{
+    bool cbRet                = true;
+    int wifiErr               = WIFI_MANAGER_ERROR_NONE;
+    char * essid              = nullptr;
+    char * bssid              = nullptr;
+    int rssi                  = 0;
+    int freq                  = 0;
+    std::vector<WiFiScanResponse> * networkScanned = (std::vector<WiFiScanResponse> *) userData;
+    std::pair<WiFiBand, int> bandInfo;
+
+    wifi_manager_security_type_e type;
+    WiFiScanResponse scannedAP;
+
+    wifiErr = wifi_manager_ap_get_essid(ap, &essid);
+    VerifyOrExit(wifiErr == WIFI_MANAGER_ERROR_NONE,
+                 ChipLogError(DeviceLayer, "FAIL: get AP essid [%s]", get_error_message(wifiErr)));
+    memcpy(scannedAP.ssid, essid,  sizeof(*essid));
+    scannedAP.ssidLen = sizeof(*essid);
+
+    wifiErr = wifi_manager_ap_get_bssid(ap, &bssid);
+    VerifyOrExit(wifiErr == WIFI_MANAGER_ERROR_NONE,
+                 ChipLogError(DeviceLayer, "Fail: get AP bssid [%s]", get_error_message(wifiErr)));
+    memcpy(scannedAP.bssid, bssid, sizeof(*bssid));
+
+    wifiErr = wifi_manager_ap_get_rssi(ap, &rssi);
+    VerifyOrExit(wifiErr == WIFI_MANAGER_ERROR_NONE,
+                 ChipLogError(DeviceLayer, "Fail: get rssi value [%s]", get_error_message(wifiErr)));
+    scannedAP.rssi = (int8_t)rssi;
+
+    wifiErr = wifi_manager_ap_get_security_type(ap, &type);
+    VerifyOrExit(wifiErr == WIFI_MANAGER_ERROR_NONE,
+                 ChipLogError(DeviceLayer, "Fail: get AP security type [%s]", get_error_message(wifiErr)));
+    scannedAP.security.SetRaw(_GetNetworkSecurityType(type));
+
+    wifiErr = wifi_manager_ap_get_frequency(ap, &freq);
+    VerifyOrExit(wifiErr == WIFI_MANAGER_ERROR_NONE,
+                 ChipLogError(DeviceLayer, "Fail: get AP frequency [%s]", get_error_message(wifiErr)));
+    bandInfo = _GetBandAndChannelFromFrequency(freq);
+    scannedAP.wiFiBand = bandInfo.first;
+    scannedAP.channel = (uint16_t)bandInfo.second;
+
+    networkScanned->push_back(scannedAP);
+
+exit:
+    {
+        g_free(essid);
+        g_free(bssid);
+    }
+    return cbRet;
 }
 
 bool WiFiManager::_FoundAPCb(wifi_manager_ap_h ap, void * userData)
@@ -362,8 +566,21 @@ CHIP_ERROR WiFiManager::_WiFiDeactivate(gpointer userData)
     return CHIP_NO_ERROR;
 }
 
+CHIP_ERROR WiFiManager::_WiFiScanToConnect(gpointer userData)
+{
+    int wifiErr;
+
+    wifiErr = wifi_manager_scan(sInstance.mWiFiManagerHandle, _ScanToConnectFinishedCb, nullptr);
+    VerifyOrReturnError(wifiErr == WIFI_MANAGER_ERROR_NONE, CHIP_ERROR_INTERNAL,
+                        ChipLogError(DeviceLayer, "FAIL: request WiFi scan [%s]", get_error_message(wifiErr)));
+
+    ChipLogProgress(DeviceLayer, "WiFi scan is requested");
+    return CHIP_NO_ERROR;
+}
+
 CHIP_ERROR WiFiManager::_WiFiScan(gpointer userData)
 {
+    ChipLogProgress(DeviceLayer, "WiFi Scan...");
     int wifiErr;
 
     wifiErr = wifi_manager_scan(sInstance.mWiFiManagerHandle, _ScanFinishedCb, nullptr);
@@ -651,7 +868,7 @@ CHIP_ERROR WiFiManager::Connect(const char * ssid, const char * key,
     }
     else
     {
-        err = PlatformMgrImpl().GLibMatterContextInvokeSync(_WiFiScan, static_cast<void *>(nullptr));
+        err = PlatformMgrImpl().GLibMatterContextInvokeSync(_WiFiScanToConnect, static_cast<void *>(nullptr));
         SuccessOrExit(err);
     }
 
@@ -898,6 +1115,39 @@ CHIP_ERROR WiFiManager::GetSecurityType(wifi_manager_security_type_e * securityT
     return CHIP_NO_ERROR;
 }
 
+CHIP_ERROR WiFiManager::GetConfiguredNetwork(NetworkCommissioning::Network & network)
+{
+    wifi_manager_ap_h connectedAp = _WiFiGetConnectedAP();
+    if (connectedAp == nullptr)
+    {
+        return CHIP_ERROR_INCORRECT_STATE;
+    }
+    char * essid = nullptr;
+    int wifiErr = wifi_manager_ap_get_essid(connectedAp, &essid);
+    VerifyOrReturnError(wifiErr == WIFI_MANAGER_ERROR_NONE, CHIP_ERROR_INTERNAL,
+                ChipLogError(DeviceLayer, "FAIL: get essid [%s]", get_error_message(wifiErr)));
+
+    memcpy(network.networkID, essid,  sizeof(*essid));
+    network.networkIDLen = sizeof(*essid);
+    g_free(essid);
+
+    return CHIP_NO_ERROR;
+}
+
+bool WiFiManager::IsWiFiStationConnected()
+{
+    CHIP_ERROR err                                  = CHIP_NO_ERROR;
+    wifi_manager_connection_state_e connectionState = WIFI_MANAGER_CONNECTION_STATE_DISCONNECTED;
+    bool isWiFiStationConnected                     = false;
+
+    err = GetConnectionState(&connectionState);
+    VerifyOrReturnError(err == CHIP_NO_ERROR, isWiFiStationConnected);
+
+    if (connectionState == WIFI_MANAGER_CONNECTION_STATE_CONNECTED)
+        isWiFiStationConnected = true;
+
+    return isWiFiStationConnected;
+}
 } // namespace Internal
 } // namespace DeviceLayer
 } // namespace chip
