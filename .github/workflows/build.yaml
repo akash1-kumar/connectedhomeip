@@ -53,10 +53,10 @@ jobs:
               env:
                   CONCURRENCY_CONTEXT: ${{ github.ref }}-${{ github.workflow }}-${{ (github.event_name == 'pull_request' && github.event.number) || (github.event_name == 'workflow_dispatch' && github.run_number) || github.sha }}
               run: echo "$CONCURRENCY_CONTEXT"
-            - uses: Wandalen/wretry.action@v1.0.36
+            - uses: Wandalen/wretry.action@v1.3.0
               name: Checkout
               with:
-                  action: actions/checkout@v3
+                  action: actions/checkout@v3.5.2
                   with: |
                       token: ${{ github.token }}
                   attempt_limit: 3
@@ -69,14 +69,19 @@ jobs:
                   mkdir /tmp/cores || true
                   sysctl -w kernel.core_pattern=/tmp/cores/core.%u.%p.%t || true
 
-            - name: Bootstrap cache
-              uses: actions/cache@v3
+            - uses: Wandalen/wretry.action@v1.3.0
+              name: Bootstrap cache
+              continue-on-error: true
               timeout-minutes: 10
               with:
-                  key: ${{ runner.os }}-env-${{ hashFiles('scripts/setup/*', 'third_party/pigweed/**') }}
-                  path: |
-                      .environment
-                      build_overrides/pigweed_environment.gni
+                action: buildjet/cache@v3
+                attempt_limit: 3
+                attempt_delay: 2000
+                with: |
+                    key: ${{ runner.os }}-env-${{ hashFiles('scripts/setup/*', 'third_party/pigweed/**') }}
+                    path: |
+                        .environment
+                        build_overrides/pigweed_environment.gni
             - name: Bootstrap
               timeout-minutes: 10
               run: bash scripts/bootstrap.sh
@@ -165,10 +170,10 @@ jobs:
               env:
                   CONCURRENCY_CONTEXT: ${{ github.ref }}-${{ github.workflow }}-${{ (github.event_name == 'pull_request' && github.event.number) || (github.event_name == 'workflow_dispatch' && github.run_number) || github.sha }}
               run: echo "$CONCURRENCY_CONTEXT"
-            - uses: Wandalen/wretry.action@v1.0.36
+            - uses: Wandalen/wretry.action@v1.3.0
               name: Checkout
               with:
-                  action: actions/checkout@v3
+                  action: actions/checkout@v3.5.2
                   with: |
                       token: ${{ github.token }}
                   attempt_limit: 3
@@ -186,14 +191,19 @@ jobs:
                   mkdir /tmp/cores || true
                   sysctl -w kernel.core_pattern=/tmp/cores/core.%u.%p.%t || true
 
-            - name: Bootstrap cache
-              uses: actions/cache@v3
+            - uses: Wandalen/wretry.action@v1.3.0
+              name: Bootstrap cache
+              continue-on-error: true
               timeout-minutes: 10
               with:
-                  key: ${{ runner.os }}-env-${{ hashFiles('scripts/setup/*', 'third_party/pigweed/**') }}
-                  path: |
-                      .environment
-                      build_overrides/pigweed_environment.gni
+                action: buildjet/cache@v3
+                attempt_limit: 3
+                attempt_delay: 2000
+                with: |
+                    key: ${{ runner.os }}-env-${{ hashFiles('scripts/setup/*', 'third_party/pigweed/**') }}
+                    path: |
+                        .environment
+                        build_overrides/pigweed_environment.gni
             - name: Bootstrap
               timeout-minutes: 10
               run: bash scripts/bootstrap.sh
@@ -337,10 +347,10 @@ jobs:
               env:
                   CONCURRENCY_CONTEXT: ${{ github.ref }}-${{ github.workflow }}-${{ (github.event_name == 'pull_request' && github.event.number) || (github.event_name == 'workflow_dispatch' && github.run_number) || github.sha }}
               run: echo "$CONCURRENCY_CONTEXT"
-            - uses: Wandalen/wretry.action@v1.0.36
+            - uses: Wandalen/wretry.action@v1.3.0
               name: Checkout
               with:
-                  action: actions/checkout@v3
+                  action: actions/checkout@v3.5.2
                   with: |
                       token: ${{ github.token }}
                   attempt_limit: 3
@@ -348,14 +358,19 @@ jobs:
             - name: Checkout submodules
               run: scripts/checkout_submodules.py --allow-changing-global-git-config --shallow --platform linux
 
-            - name: Bootstrap cache
-              uses: actions/cache@v3
+            - uses: Wandalen/wretry.action@v1.3.0
+              name: Bootstrap cache
+              continue-on-error: true
               timeout-minutes: 10
               with:
-                  key: ${{ runner.os }}-env-${{ hashFiles('scripts/setup/*', 'third_party/pigweed/**') }}
-                  path: |
-                      .environment
-                      build_overrides/pigweed_environment.gni
+                action: buildjet/cache@v3
+                attempt_limit: 3
+                attempt_delay: 2000
+                with: |
+                    key: ${{ runner.os }}-env-${{ hashFiles('scripts/setup/*', 'third_party/pigweed/**') }}
+                    path: |
+                        .environment
+                        build_overrides/pigweed_environment.gni
             - name: Bootstrap
               timeout-minutes: 10
               run: bash scripts/bootstrap.sh
@@ -388,10 +403,10 @@ jobs:
         if: github.actor != 'restyled-io[bot]'
 
         steps:
-            - uses: Wandalen/wretry.action@v1.0.36
+            - uses: Wandalen/wretry.action@v1.3.0
               name: Checkout
               with:
-                  action: actions/checkout@v3
+                  action: actions/checkout@v3.5.2
                   with: |
                       token: ${{ github.token }}
                   attempt_limit: 3
@@ -407,14 +422,19 @@ jobs:
               run: |
                   mkdir -p ~/Library/Logs/DiagnosticReports || true
 
-            - name: Bootstrap cache
-              uses: actions/cache@v3
+            - uses: Wandalen/wretry.action@v1.3.0
+              name: Bootstrap cache
+              continue-on-error: true
               timeout-minutes: 10
               with:
-                  key: ${{ runner.os }}-env-${{ hashFiles('scripts/setup/*', 'third_party/pigweed/**') }}
-                  path: |
-                      .environment
-                      build_overrides/pigweed_environment.gni
+                action: buildjet/cache@v3
+                attempt_limit: 3
+                attempt_delay: 2000
+                with: |
+                    key: ${{ runner.os }}-env-${{ hashFiles('scripts/setup/*', 'third_party/pigweed/**') }}
+                    path: |
+                        .environment
+                        build_overrides/pigweed_environment.gni
             - name: Bootstrap
               timeout-minutes: 25
               run: bash scripts/bootstrap.sh
@@ -496,10 +516,10 @@ jobs:
                 net.ipv4.conf.all.forwarding=1 net.ipv6.conf.all.forwarding=1"
 
         steps:
-            - uses: Wandalen/wretry.action@v1.0.36
+            - uses: Wandalen/wretry.action@v1.3.0
               name: Checkout
               with:
-                  action: actions/checkout@v3
+                  action: actions/checkout@v3.5.2
                   with: |
                       token: ${{ github.token }}
                   attempt_limit: 3
@@ -507,14 +527,19 @@ jobs:
             - name: Checkout submodules
               run: scripts/checkout_submodules.py --allow-changing-global-git-config --shallow --platform linux
 
-            - name: Bootstrap cache
-              uses: actions/cache@v3
+            - uses: Wandalen/wretry.action@v1.3.0
+              name: Bootstrap cache
+              continue-on-error: true
               timeout-minutes: 10
               with:
-                  key: ${{ runner.os }}-env-${{ hashFiles('scripts/setup/*', 'third_party/pigweed/**') }}
-                  path: |
-                      .environment
-                      build_overrides/pigweed_environment.gni
+                action: buildjet/cache@v3
+                attempt_limit: 3
+                attempt_delay: 2000
+                with: |
+                    key: ${{ runner.os }}-env-${{ hashFiles('scripts/setup/*', 'third_party/pigweed/**') }}
+                    path: |
+                        .environment
+                        build_overrides/pigweed_environment.gni
             - name: Bootstrap
               timeout-minutes: 10
               run: bash scripts/bootstrap.sh

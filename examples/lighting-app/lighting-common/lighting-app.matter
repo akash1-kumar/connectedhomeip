@@ -4,7 +4,6 @@
 struct ModeTagStruct {
     optional vendor_id mfgCode = 0;
     enum16 value = 1;
-    optional char_string<64> tagName = 2;
 }
 
 struct ModeOptionStruct {
@@ -18,9 +17,20 @@ struct ApplicationStruct {
     char_string applicationID = 1;
 }
 
+struct ErrorStateStruct {
+    enum8 errorStateID = 0;
+    optional char_string<64> errorStateLabel = 1;
+    optional char_string<64> errorStateDetails = 2;
+}
+
 struct LabelStruct {
     char_string<16> label = 0;
     char_string<16> value = 1;
+}
+
+struct OperationalStateStruct {
+    enum8 operationalStateID = 0;
+    optional char_string<64> operationalStateLabel = 1;
 }
 
 /** Attributes and commands for putting a device into Identification mode (e.g. flashing a light). */
@@ -2100,12 +2110,6 @@ server cluster OccupancySensing = 1030 {
 endpoint 0 {
   device type rootdevice = 22, version 1;
   binding cluster OtaSoftwareUpdateProvider;
-
-  server cluster Groups {
-    ram      attribute nameSupport;
-    ram      attribute featureMap default = 0;
-    ram      attribute clusterRevision default = 4;
-  }
 
   server cluster Descriptor {
     callback attribute deviceTypeList;

@@ -31,7 +31,7 @@ endif()
 
 include(${CMAKE_CURRENT_LIST_DIR}/ota-image.cmake)
 
-set(CHIP_REQUIRE_COMPONENTS freertos lwip bt mbedtls fatfs app_update console openthread nvs_flash spi_flash)
+set(CHIP_REQUIRE_COMPONENTS esp_eth freertos lwip bt mbedtls fatfs app_update console openthread nvs_flash spi_flash)
 
 if(NOT "${IDF_TARGET}" STREQUAL "esp32h2")
     list(APPEND CHIP_REQUIRE_COMPONENTS mdns)
@@ -371,9 +371,10 @@ endif()
 if(CONFIG_OPENTHREAD_ENABLED)
     idf_component_get_property(openthread_lib openthread COMPONENT_LIB)
     list(APPEND chip_libraries $<TARGET_FILE:${openthread_lib}>)
-
-    idf_component_get_property(ieee802154_lib ieee802154 COMPONENT_LIB)
-    list(APPEND chip_libraries $<TARGET_FILE:${ieee802154_lib}>)
+    if (CONFIG_IEEE802154_ENABLED)
+        idf_component_get_property(ieee802154_lib ieee802154 COMPONENT_LIB)
+        list(APPEND chip_libraries $<TARGET_FILE:${ieee802154_lib}>)
+    endif()
 endif()
 
 if((NOT CONFIG_USE_MINIMAL_MDNS) AND (CONFIG_ENABLE_WIFI_STATION OR CONFIG_ENABLE_WIFI_AP))
@@ -421,6 +422,11 @@ if (CONFIG_ESP32_WIFI_ENABLED)
 
     idf_component_get_property(wpa_supplicant_lib wpa_supplicant COMPONENT_LIB)
     list(APPEND chip_libraries $<TARGET_FILE:${wpa_supplicant_lib}>)
+endif()
+
+if (CONFIG_ETH_ENABLED)
+    idf_component_get_property(esp_eth_lib esp_eth COMPONENT_LIB)
+    list(APPEND chip_libraries $<TARGET_FILE:${esp_eth_lib}>)
 endif()
 
 idf_component_get_property(esp_netif_lib esp_netif COMPONENT_LIB)

@@ -203,7 +203,8 @@ typedef NS_ENUM(NSUInteger, MTRDeviceWorkItemDuplicateTypeID) {
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<MTRDevice: %p>[fabric: %u, nodeID: %@]", self, _fabricIndex, _nodeID];
+    return [NSString
+        stringWithFormat:@"<MTRDevice: %p>[fabric: %u, nodeID: 0x%016llX]", self, _fabricIndex, _nodeID.unsignedLongLongValue];
 }
 
 + (MTRDevice *)deviceWithNodeID:(NSNumber *)nodeID controller:(MTRDeviceController *)controller
@@ -235,6 +236,10 @@ typedef NS_ENUM(NSUInteger, MTRDeviceWorkItemDuplicateTypeID) {
     os_unfair_lock_lock(&self->_lock);
 
     _weakDelegate = nil;
+
+    // Make sure we don't try to resubscribe if we have a pending resubscribe
+    // attempt, since we now have no delegate.
+    _reattemptingSubscription = NO;
 
     os_unfair_lock_unlock(&self->_lock);
 }
@@ -335,7 +340,8 @@ typedef NS_ENUM(NSUInteger, MTRDeviceWorkItemDuplicateTypeID) {
     // if there is no delegate then also do not retry
     id<MTRDeviceDelegate> delegate = _weakDelegate.strongObject;
     if (!delegate) {
-        MTR_LOG_DEFAULT("%@ no delegate - do not reattempt subscription", self);
+        // NOTE: Do not log anythig here: we have been invalidated, and the
+        // Matter stack might already be torn down.
         os_unfair_lock_unlock(&self->_lock);
         return;
     }

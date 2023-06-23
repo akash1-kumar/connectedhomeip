@@ -19764,66 +19764,45 @@ void CHIPModeSelectSupportedModesAttributeCallback::CallbackFn(
         std::string newElement_0_modeCtorSignature = "(I)V";
         chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(
             newElement_0_modeClassName.c_str(), newElement_0_modeCtorSignature.c_str(), entry_0.mode, newElement_0_mode);
-        jobject newElement_0_modeTags;
-        chip::JniReferences::GetInstance().CreateArrayList(newElement_0_modeTags);
+        jobject newElement_0_semanticTags;
+        chip::JniReferences::GetInstance().CreateArrayList(newElement_0_semanticTags);
 
-        auto iter_newElement_0_modeTags_2 = entry_0.modeTags.begin();
-        while (iter_newElement_0_modeTags_2.Next())
+        auto iter_newElement_0_semanticTags_2 = entry_0.semanticTags.begin();
+        while (iter_newElement_0_semanticTags_2.Next())
         {
-            auto & entry_2 = iter_newElement_0_modeTags_2.GetValue();
+            auto & entry_2 = iter_newElement_0_semanticTags_2.GetValue();
             jobject newElement_2;
             jobject newElement_2_mfgCode;
-            if (!entry_2.mfgCode.HasValue())
-            {
-                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_mfgCode);
-            }
-            else
-            {
-                jobject newElement_2_mfgCodeInsideOptional;
-                std::string newElement_2_mfgCodeInsideOptionalClassName     = "java/lang/Integer";
-                std::string newElement_2_mfgCodeInsideOptionalCtorSignature = "(I)V";
-                chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
-                    newElement_2_mfgCodeInsideOptionalClassName.c_str(), newElement_2_mfgCodeInsideOptionalCtorSignature.c_str(),
-                    static_cast<uint16_t>(entry_2.mfgCode.Value()), newElement_2_mfgCodeInsideOptional);
-                chip::JniReferences::GetInstance().CreateOptional(newElement_2_mfgCodeInsideOptional, newElement_2_mfgCode);
-            }
+            std::string newElement_2_mfgCodeClassName     = "java/lang/Integer";
+            std::string newElement_2_mfgCodeCtorSignature = "(I)V";
+            chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
+                newElement_2_mfgCodeClassName.c_str(), newElement_2_mfgCodeCtorSignature.c_str(),
+                static_cast<uint16_t>(entry_2.mfgCode), newElement_2_mfgCode);
             jobject newElement_2_value;
             std::string newElement_2_valueClassName     = "java/lang/Integer";
             std::string newElement_2_valueCtorSignature = "(I)V";
             chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
                 newElement_2_valueClassName.c_str(), newElement_2_valueCtorSignature.c_str(), entry_2.value, newElement_2_value);
-            jobject newElement_2_tagName;
-            if (!entry_2.tagName.HasValue())
-            {
-                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_tagName);
-            }
-            else
-            {
-                jobject newElement_2_tagNameInsideOptional;
-                LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_2.tagName.Value(),
-                                                                                     newElement_2_tagNameInsideOptional));
-                chip::JniReferences::GetInstance().CreateOptional(newElement_2_tagNameInsideOptional, newElement_2_tagName);
-            }
 
-            jclass modeTagStructStructClass_3;
+            jclass semanticTagStructStructClass_3;
             err = chip::JniReferences::GetInstance().GetClassRef(
-                env, "chip/devicecontroller/ChipStructs$ModeSelectClusterModeTagStruct", modeTagStructStructClass_3);
+                env, "chip/devicecontroller/ChipStructs$ModeSelectClusterSemanticTagStruct", semanticTagStructStructClass_3);
             if (err != CHIP_NO_ERROR)
             {
-                ChipLogError(Zcl, "Could not find class ChipStructs$ModeSelectClusterModeTagStruct");
+                ChipLogError(Zcl, "Could not find class ChipStructs$ModeSelectClusterSemanticTagStruct");
                 return;
             }
-            jmethodID modeTagStructStructCtor_3 = env->GetMethodID(
-                modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;Ljava/util/Optional;)V");
-            if (modeTagStructStructCtor_3 == nullptr)
+            jmethodID semanticTagStructStructCtor_3 =
+                env->GetMethodID(semanticTagStructStructClass_3, "<init>", "(Ljava/lang/Integer;Ljava/lang/Integer;)V");
+            if (semanticTagStructStructCtor_3 == nullptr)
             {
-                ChipLogError(Zcl, "Could not find ChipStructs$ModeSelectClusterModeTagStruct constructor");
+                ChipLogError(Zcl, "Could not find ChipStructs$ModeSelectClusterSemanticTagStruct constructor");
                 return;
             }
 
-            newElement_2 = env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode,
-                                          newElement_2_value, newElement_2_tagName);
-            chip::JniReferences::GetInstance().AddToList(newElement_0_modeTags, newElement_2);
+            newElement_2 = env->NewObject(semanticTagStructStructClass_3, semanticTagStructStructCtor_3, newElement_2_mfgCode,
+                                          newElement_2_value);
+            chip::JniReferences::GetInstance().AddToList(newElement_0_semanticTags, newElement_2);
         }
 
         jclass modeOptionStructStructClass_1;
@@ -19843,7 +19822,7 @@ void CHIPModeSelectSupportedModesAttributeCallback::CallbackFn(
         }
 
         newElement_0 = env->NewObject(modeOptionStructStructClass_1, modeOptionStructStructCtor_1, newElement_0_label,
-                                      newElement_0_mode, newElement_0_modeTags);
+                                      newElement_0_mode, newElement_0_semanticTags);
         chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
     }
 
@@ -20259,9 +20238,9 @@ void CHIPModeSelectAttributeListAttributeCallback::CallbackFn(void * context,
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPLaundryWasherModeSelectSupportedModesAttributeCallback::CHIPLaundryWasherModeSelectSupportedModesAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPLaundryWasherModeSelectClusterSupportedModesAttributeCallbackType>(CallbackFn, this),
+CHIPLaundryWasherModeSupportedModesAttributeCallback::CHIPLaundryWasherModeSupportedModesAttributeCallback(jobject javaCallback,
+                                                                                                           bool keepAlive) :
+    chip::Callback::Callback<CHIPLaundryWasherModeClusterSupportedModesAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -20278,7 +20257,7 @@ CHIPLaundryWasherModeSelectSupportedModesAttributeCallback::CHIPLaundryWasherMod
     }
 }
 
-CHIPLaundryWasherModeSelectSupportedModesAttributeCallback::~CHIPLaundryWasherModeSelectSupportedModesAttributeCallback()
+CHIPLaundryWasherModeSupportedModesAttributeCallback::~CHIPLaundryWasherModeSupportedModesAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -20289,587 +20268,9 @@ CHIPLaundryWasherModeSelectSupportedModesAttributeCallback::~CHIPLaundryWasherMo
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPLaundryWasherModeSelectSupportedModesAttributeCallback::CallbackFn(
+void CHIPLaundryWasherModeSupportedModesAttributeCallback::CallbackFn(
     void * context,
-    const chip::app::DataModel::DecodableList<
-        chip::app::Clusters::LaundryWasherModeSelect::Structs::ModeOptionStruct::DecodableType> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPLaundryWasherModeSelectSupportedModesAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPLaundryWasherModeSelectSupportedModesAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        jobject newElement_0_label;
-        LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_0.label, newElement_0_label));
-        jobject newElement_0_mode;
-        std::string newElement_0_modeClassName     = "java/lang/Integer";
-        std::string newElement_0_modeCtorSignature = "(I)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(
-            newElement_0_modeClassName.c_str(), newElement_0_modeCtorSignature.c_str(), entry_0.mode, newElement_0_mode);
-        jobject newElement_0_modeTags;
-        chip::JniReferences::GetInstance().CreateArrayList(newElement_0_modeTags);
-
-        auto iter_newElement_0_modeTags_2 = entry_0.modeTags.begin();
-        while (iter_newElement_0_modeTags_2.Next())
-        {
-            auto & entry_2 = iter_newElement_0_modeTags_2.GetValue();
-            jobject newElement_2;
-            jobject newElement_2_mfgCode;
-            if (!entry_2.mfgCode.HasValue())
-            {
-                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_mfgCode);
-            }
-            else
-            {
-                jobject newElement_2_mfgCodeInsideOptional;
-                std::string newElement_2_mfgCodeInsideOptionalClassName     = "java/lang/Integer";
-                std::string newElement_2_mfgCodeInsideOptionalCtorSignature = "(I)V";
-                chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
-                    newElement_2_mfgCodeInsideOptionalClassName.c_str(), newElement_2_mfgCodeInsideOptionalCtorSignature.c_str(),
-                    static_cast<uint16_t>(entry_2.mfgCode.Value()), newElement_2_mfgCodeInsideOptional);
-                chip::JniReferences::GetInstance().CreateOptional(newElement_2_mfgCodeInsideOptional, newElement_2_mfgCode);
-            }
-            jobject newElement_2_value;
-            std::string newElement_2_valueClassName     = "java/lang/Integer";
-            std::string newElement_2_valueCtorSignature = "(I)V";
-            chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
-                newElement_2_valueClassName.c_str(), newElement_2_valueCtorSignature.c_str(), entry_2.value, newElement_2_value);
-            jobject newElement_2_tagName;
-            if (!entry_2.tagName.HasValue())
-            {
-                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_tagName);
-            }
-            else
-            {
-                jobject newElement_2_tagNameInsideOptional;
-                LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_2.tagName.Value(),
-                                                                                     newElement_2_tagNameInsideOptional));
-                chip::JniReferences::GetInstance().CreateOptional(newElement_2_tagNameInsideOptional, newElement_2_tagName);
-            }
-
-            jclass modeTagStructStructClass_3;
-            err = chip::JniReferences::GetInstance().GetClassRef(
-                env, "chip/devicecontroller/ChipStructs$LaundryWasherModeSelectClusterModeTagStruct", modeTagStructStructClass_3);
-            if (err != CHIP_NO_ERROR)
-            {
-                ChipLogError(Zcl, "Could not find class ChipStructs$LaundryWasherModeSelectClusterModeTagStruct");
-                return;
-            }
-            jmethodID modeTagStructStructCtor_3 = env->GetMethodID(
-                modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;Ljava/util/Optional;)V");
-            if (modeTagStructStructCtor_3 == nullptr)
-            {
-                ChipLogError(Zcl, "Could not find ChipStructs$LaundryWasherModeSelectClusterModeTagStruct constructor");
-                return;
-            }
-
-            newElement_2 = env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode,
-                                          newElement_2_value, newElement_2_tagName);
-            chip::JniReferences::GetInstance().AddToList(newElement_0_modeTags, newElement_2);
-        }
-
-        jclass modeOptionStructStructClass_1;
-        err = chip::JniReferences::GetInstance().GetClassRef(
-            env, "chip/devicecontroller/ChipStructs$LaundryWasherModeSelectClusterModeOptionStruct", modeOptionStructStructClass_1);
-        if (err != CHIP_NO_ERROR)
-        {
-            ChipLogError(Zcl, "Could not find class ChipStructs$LaundryWasherModeSelectClusterModeOptionStruct");
-            return;
-        }
-        jmethodID modeOptionStructStructCtor_1 = env->GetMethodID(modeOptionStructStructClass_1, "<init>",
-                                                                  "(Ljava/lang/String;Ljava/lang/Integer;Ljava/util/ArrayList;)V");
-        if (modeOptionStructStructCtor_1 == nullptr)
-        {
-            ChipLogError(Zcl, "Could not find ChipStructs$LaundryWasherModeSelectClusterModeOptionStruct constructor");
-            return;
-        }
-
-        newElement_0 = env->NewObject(modeOptionStructStructClass_1, modeOptionStructStructCtor_1, newElement_0_label,
-                                      newElement_0_mode, newElement_0_modeTags);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPLaundryWasherModeSelectStartUpModeAttributeCallback::CHIPLaundryWasherModeSelectStartUpModeAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPLaundryWasherModeSelectClusterStartUpModeAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPLaundryWasherModeSelectStartUpModeAttributeCallback::~CHIPLaundryWasherModeSelectStartUpModeAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPLaundryWasherModeSelectStartUpModeAttributeCallback::CallbackFn(void * context,
-                                                                         const chip::app::DataModel::Nullable<uint8_t> & value)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-    std::unique_ptr<CHIPLaundryWasherModeSelectStartUpModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPLaundryWasherModeSelectStartUpModeAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject javaValue;
-    if (value.IsNull())
-    {
-        javaValue = nullptr;
-    }
-    else
-    {
-        std::string javaValueClassName     = "java/lang/Integer";
-        std::string javaValueCtorSignature = "(I)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
-                                                                      value.Value(), javaValue);
-    }
-
-    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
-}
-
-CHIPLaundryWasherModeSelectOnModeAttributeCallback::CHIPLaundryWasherModeSelectOnModeAttributeCallback(jobject javaCallback,
-                                                                                                       bool keepAlive) :
-    chip::Callback::Callback<CHIPLaundryWasherModeSelectClusterOnModeAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPLaundryWasherModeSelectOnModeAttributeCallback::~CHIPLaundryWasherModeSelectOnModeAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPLaundryWasherModeSelectOnModeAttributeCallback::CallbackFn(void * context,
-                                                                    const chip::app::DataModel::Nullable<uint8_t> & value)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-    std::unique_ptr<CHIPLaundryWasherModeSelectOnModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPLaundryWasherModeSelectOnModeAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject javaValue;
-    if (value.IsNull())
-    {
-        javaValue = nullptr;
-    }
-    else
-    {
-        std::string javaValueClassName     = "java/lang/Integer";
-        std::string javaValueCtorSignature = "(I)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
-                                                                      value.Value(), javaValue);
-    }
-
-    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
-}
-
-CHIPLaundryWasherModeSelectGeneratedCommandListAttributeCallback::CHIPLaundryWasherModeSelectGeneratedCommandListAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPLaundryWasherModeSelectClusterGeneratedCommandListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPLaundryWasherModeSelectGeneratedCommandListAttributeCallback::
-    ~CHIPLaundryWasherModeSelectGeneratedCommandListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPLaundryWasherModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPLaundryWasherModeSelectGeneratedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPLaundryWasherModeSelectGeneratedCommandListAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPLaundryWasherModeSelectAcceptedCommandListAttributeCallback::CHIPLaundryWasherModeSelectAcceptedCommandListAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPLaundryWasherModeSelectClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPLaundryWasherModeSelectAcceptedCommandListAttributeCallback::~CHIPLaundryWasherModeSelectAcceptedCommandListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPLaundryWasherModeSelectAcceptedCommandListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPLaundryWasherModeSelectAcceptedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPLaundryWasherModeSelectAcceptedCommandListAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPLaundryWasherModeSelectEventListAttributeCallback::CHIPLaundryWasherModeSelectEventListAttributeCallback(jobject javaCallback,
-                                                                                                             bool keepAlive) :
-    chip::Callback::Callback<CHIPLaundryWasherModeSelectClusterEventListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPLaundryWasherModeSelectEventListAttributeCallback::~CHIPLaundryWasherModeSelectEventListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPLaundryWasherModeSelectEventListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::EventId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPLaundryWasherModeSelectEventListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPLaundryWasherModeSelectEventListAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPLaundryWasherModeSelectAttributeListAttributeCallback::CHIPLaundryWasherModeSelectAttributeListAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPLaundryWasherModeSelectClusterAttributeListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPLaundryWasherModeSelectAttributeListAttributeCallback::~CHIPLaundryWasherModeSelectAttributeListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPLaundryWasherModeSelectAttributeListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::AttributeId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPLaundryWasherModeSelectAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPLaundryWasherModeSelectAttributeListAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectSupportedModesAttributeCallback::
-    CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectSupportedModesAttributeCallback(jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectClusterSupportedModesAttributeCallbackType>(
-        CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectSupportedModesAttributeCallback::
-    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectSupportedModesAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectSupportedModesAttributeCallback::CallbackFn(
-    void * context,
-    const chip::app::DataModel::DecodableList<
-        chip::app::Clusters::RefrigeratorAndTemperatureControlledCabinetModeSelect::Structs::ModeOptionStruct::DecodableType> &
+    const chip::app::DataModel::DecodableList<chip::app::Clusters::LaundryWasherMode::Structs::ModeOptionStruct::DecodableType> &
         list)
 {
     chip::DeviceLayer::StackUnlock unlock;
@@ -20879,11 +20280,8 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectSupportedModesAttr
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectSupportedModesAttributeCallback,
-                    decltype(&maybeDestroy)>
-        cppCallback(
-            reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectSupportedModesAttributeCallback *>(context),
-            maybeDestroy);
+    std::unique_ptr<CHIPLaundryWasherModeSupportedModesAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPLaundryWasherModeSupportedModesAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -20937,63 +20335,41 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectSupportedModesAttr
             std::string newElement_2_valueCtorSignature = "(I)V";
             chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
                 newElement_2_valueClassName.c_str(), newElement_2_valueCtorSignature.c_str(), entry_2.value, newElement_2_value);
-            jobject newElement_2_tagName;
-            if (!entry_2.tagName.HasValue())
-            {
-                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_tagName);
-            }
-            else
-            {
-                jobject newElement_2_tagNameInsideOptional;
-                LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_2.tagName.Value(),
-                                                                                     newElement_2_tagNameInsideOptional));
-                chip::JniReferences::GetInstance().CreateOptional(newElement_2_tagNameInsideOptional, newElement_2_tagName);
-            }
 
             jclass modeTagStructStructClass_3;
             err = chip::JniReferences::GetInstance().GetClassRef(
-                env, "chip/devicecontroller/ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeSelectClusterModeTagStruct",
-                modeTagStructStructClass_3);
+                env, "chip/devicecontroller/ChipStructs$LaundryWasherModeClusterModeTagStruct", modeTagStructStructClass_3);
             if (err != CHIP_NO_ERROR)
             {
-                ChipLogError(
-                    Zcl,
-                    "Could not find class ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeSelectClusterModeTagStruct");
+                ChipLogError(Zcl, "Could not find class ChipStructs$LaundryWasherModeClusterModeTagStruct");
                 return;
             }
-            jmethodID modeTagStructStructCtor_3 = env->GetMethodID(
-                modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;Ljava/util/Optional;)V");
+            jmethodID modeTagStructStructCtor_3 =
+                env->GetMethodID(modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;)V");
             if (modeTagStructStructCtor_3 == nullptr)
             {
-                ChipLogError(Zcl,
-                             "Could not find ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeSelectClusterModeTagStruct "
-                             "constructor");
+                ChipLogError(Zcl, "Could not find ChipStructs$LaundryWasherModeClusterModeTagStruct constructor");
                 return;
             }
 
-            newElement_2 = env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode,
-                                          newElement_2_value, newElement_2_tagName);
+            newElement_2 =
+                env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode, newElement_2_value);
             chip::JniReferences::GetInstance().AddToList(newElement_0_modeTags, newElement_2);
         }
 
         jclass modeOptionStructStructClass_1;
         err = chip::JniReferences::GetInstance().GetClassRef(
-            env, "chip/devicecontroller/ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeSelectClusterModeOptionStruct",
-            modeOptionStructStructClass_1);
+            env, "chip/devicecontroller/ChipStructs$LaundryWasherModeClusterModeOptionStruct", modeOptionStructStructClass_1);
         if (err != CHIP_NO_ERROR)
         {
-            ChipLogError(
-                Zcl,
-                "Could not find class ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeSelectClusterModeOptionStruct");
+            ChipLogError(Zcl, "Could not find class ChipStructs$LaundryWasherModeClusterModeOptionStruct");
             return;
         }
         jmethodID modeOptionStructStructCtor_1 = env->GetMethodID(modeOptionStructStructClass_1, "<init>",
                                                                   "(Ljava/lang/String;Ljava/lang/Integer;Ljava/util/ArrayList;)V");
         if (modeOptionStructStructCtor_1 == nullptr)
         {
-            ChipLogError(Zcl,
-                         "Could not find ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeSelectClusterModeOptionStruct "
-                         "constructor");
+            ChipLogError(Zcl, "Could not find ChipStructs$LaundryWasherModeClusterModeOptionStruct constructor");
             return;
         }
 
@@ -21006,10 +20382,9 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectSupportedModesAttr
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttributeCallback::
-    CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttributeCallback(jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectClusterStartUpModeAttributeCallbackType>(
-        CallbackFn, this),
+CHIPLaundryWasherModeStartUpModeAttributeCallback::CHIPLaundryWasherModeStartUpModeAttributeCallback(jobject javaCallback,
+                                                                                                     bool keepAlive) :
+    chip::Callback::Callback<CHIPLaundryWasherModeClusterStartUpModeAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -21026,8 +20401,7 @@ CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttributeCal
     }
 }
 
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttributeCallback::
-    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttributeCallback()
+CHIPLaundryWasherModeStartUpModeAttributeCallback::~CHIPLaundryWasherModeStartUpModeAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21038,8 +20412,8 @@ CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttributeCal
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::Nullable<uint8_t> & value)
+void CHIPLaundryWasherModeStartUpModeAttributeCallback::CallbackFn(void * context,
+                                                                   const chip::app::DataModel::Nullable<uint8_t> & value)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -21047,10 +20421,8 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttribu
     jobject javaCallbackRef;
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttributeCallback, decltype(&maybeDestroy)>
-        cppCallback(
-            reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttributeCallback *>(context),
-            maybeDestroy);
+    std::unique_ptr<CHIPLaundryWasherModeStartUpModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPLaundryWasherModeStartUpModeAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -21077,9 +20449,357 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectStartUpModeAttribu
     env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
 }
 
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCallback::
-    CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCallback(jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectClusterOnModeAttributeCallbackType>(
+CHIPLaundryWasherModeOnModeAttributeCallback::CHIPLaundryWasherModeOnModeAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPLaundryWasherModeClusterOnModeAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPLaundryWasherModeOnModeAttributeCallback::~CHIPLaundryWasherModeOnModeAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPLaundryWasherModeOnModeAttributeCallback::CallbackFn(void * context, const chip::app::DataModel::Nullable<uint8_t> & value)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+    std::unique_ptr<CHIPLaundryWasherModeOnModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPLaundryWasherModeOnModeAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject javaValue;
+    if (value.IsNull())
+    {
+        javaValue = nullptr;
+    }
+    else
+    {
+        std::string javaValueClassName     = "java/lang/Integer";
+        std::string javaValueCtorSignature = "(I)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
+                                                                      value.Value(), javaValue);
+    }
+
+    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
+}
+
+CHIPLaundryWasherModeGeneratedCommandListAttributeCallback::CHIPLaundryWasherModeGeneratedCommandListAttributeCallback(
+    jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPLaundryWasherModeClusterGeneratedCommandListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPLaundryWasherModeGeneratedCommandListAttributeCallback::~CHIPLaundryWasherModeGeneratedCommandListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPLaundryWasherModeGeneratedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPLaundryWasherModeGeneratedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPLaundryWasherModeGeneratedCommandListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPLaundryWasherModeAcceptedCommandListAttributeCallback::CHIPLaundryWasherModeAcceptedCommandListAttributeCallback(
+    jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPLaundryWasherModeClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPLaundryWasherModeAcceptedCommandListAttributeCallback::~CHIPLaundryWasherModeAcceptedCommandListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPLaundryWasherModeAcceptedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPLaundryWasherModeAcceptedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPLaundryWasherModeAcceptedCommandListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPLaundryWasherModeEventListAttributeCallback::CHIPLaundryWasherModeEventListAttributeCallback(jobject javaCallback,
+                                                                                                 bool keepAlive) :
+    chip::Callback::Callback<CHIPLaundryWasherModeClusterEventListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPLaundryWasherModeEventListAttributeCallback::~CHIPLaundryWasherModeEventListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPLaundryWasherModeEventListAttributeCallback::CallbackFn(void * context,
+                                                                 const chip::app::DataModel::DecodableList<chip::EventId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPLaundryWasherModeEventListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPLaundryWasherModeEventListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPLaundryWasherModeAttributeListAttributeCallback::CHIPLaundryWasherModeAttributeListAttributeCallback(jobject javaCallback,
+                                                                                                         bool keepAlive) :
+    chip::Callback::Callback<CHIPLaundryWasherModeClusterAttributeListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPLaundryWasherModeAttributeListAttributeCallback::~CHIPLaundryWasherModeAttributeListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPLaundryWasherModeAttributeListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::AttributeId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPLaundryWasherModeAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPLaundryWasherModeAttributeListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRefrigeratorAndTemperatureControlledCabinetModeSupportedModesAttributeCallback::
+    CHIPRefrigeratorAndTemperatureControlledCabinetModeSupportedModesAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeClusterSupportedModesAttributeCallbackType>(
         CallbackFn, this),
     keepAlive(keepAlive)
 {
@@ -21097,8 +20817,8 @@ CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCallback
     }
 }
 
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCallback::
-    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCallback()
+CHIPRefrigeratorAndTemperatureControlledCabinetModeSupportedModesAttributeCallback::
+    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeSupportedModesAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21109,7 +20829,162 @@ CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCallback
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCallback::CallbackFn(
+void CHIPRefrigeratorAndTemperatureControlledCabinetModeSupportedModesAttributeCallback::CallbackFn(
+    void * context,
+    const chip::app::DataModel::DecodableList<
+        chip::app::Clusters::RefrigeratorAndTemperatureControlledCabinetMode::Structs::ModeOptionStruct::DecodableType> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeSupportedModesAttributeCallback, decltype(&maybeDestroy)>
+        cppCallback(reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeSupportedModesAttributeCallback *>(context),
+                    maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        jobject newElement_0_label;
+        LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_0.label, newElement_0_label));
+        jobject newElement_0_mode;
+        std::string newElement_0_modeClassName     = "java/lang/Integer";
+        std::string newElement_0_modeCtorSignature = "(I)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(
+            newElement_0_modeClassName.c_str(), newElement_0_modeCtorSignature.c_str(), entry_0.mode, newElement_0_mode);
+        jobject newElement_0_modeTags;
+        chip::JniReferences::GetInstance().CreateArrayList(newElement_0_modeTags);
+
+        auto iter_newElement_0_modeTags_2 = entry_0.modeTags.begin();
+        while (iter_newElement_0_modeTags_2.Next())
+        {
+            auto & entry_2 = iter_newElement_0_modeTags_2.GetValue();
+            jobject newElement_2;
+            jobject newElement_2_mfgCode;
+            if (!entry_2.mfgCode.HasValue())
+            {
+                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_mfgCode);
+            }
+            else
+            {
+                jobject newElement_2_mfgCodeInsideOptional;
+                std::string newElement_2_mfgCodeInsideOptionalClassName     = "java/lang/Integer";
+                std::string newElement_2_mfgCodeInsideOptionalCtorSignature = "(I)V";
+                chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
+                    newElement_2_mfgCodeInsideOptionalClassName.c_str(), newElement_2_mfgCodeInsideOptionalCtorSignature.c_str(),
+                    static_cast<uint16_t>(entry_2.mfgCode.Value()), newElement_2_mfgCodeInsideOptional);
+                chip::JniReferences::GetInstance().CreateOptional(newElement_2_mfgCodeInsideOptional, newElement_2_mfgCode);
+            }
+            jobject newElement_2_value;
+            std::string newElement_2_valueClassName     = "java/lang/Integer";
+            std::string newElement_2_valueCtorSignature = "(I)V";
+            chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
+                newElement_2_valueClassName.c_str(), newElement_2_valueCtorSignature.c_str(), entry_2.value, newElement_2_value);
+
+            jclass modeTagStructStructClass_3;
+            err = chip::JniReferences::GetInstance().GetClassRef(
+                env, "chip/devicecontroller/ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeClusterModeTagStruct",
+                modeTagStructStructClass_3);
+            if (err != CHIP_NO_ERROR)
+            {
+                ChipLogError(
+                    Zcl, "Could not find class ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeClusterModeTagStruct");
+                return;
+            }
+            jmethodID modeTagStructStructCtor_3 =
+                env->GetMethodID(modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;)V");
+            if (modeTagStructStructCtor_3 == nullptr)
+            {
+                ChipLogError(
+                    Zcl,
+                    "Could not find ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeClusterModeTagStruct constructor");
+                return;
+            }
+
+            newElement_2 =
+                env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode, newElement_2_value);
+            chip::JniReferences::GetInstance().AddToList(newElement_0_modeTags, newElement_2);
+        }
+
+        jclass modeOptionStructStructClass_1;
+        err = chip::JniReferences::GetInstance().GetClassRef(
+            env, "chip/devicecontroller/ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct",
+            modeOptionStructStructClass_1);
+        if (err != CHIP_NO_ERROR)
+        {
+            ChipLogError(Zcl,
+                         "Could not find class ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct");
+            return;
+        }
+        jmethodID modeOptionStructStructCtor_1 = env->GetMethodID(modeOptionStructStructClass_1, "<init>",
+                                                                  "(Ljava/lang/String;Ljava/lang/Integer;Ljava/util/ArrayList;)V");
+        if (modeOptionStructStructCtor_1 == nullptr)
+        {
+            ChipLogError(
+                Zcl,
+                "Could not find ChipStructs$RefrigeratorAndTemperatureControlledCabinetModeClusterModeOptionStruct constructor");
+            return;
+        }
+
+        newElement_0 = env->NewObject(modeOptionStructStructClass_1, modeOptionStructStructCtor_1, newElement_0_label,
+                                      newElement_0_mode, newElement_0_modeTags);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRefrigeratorAndTemperatureControlledCabinetModeStartUpModeAttributeCallback::
+    CHIPRefrigeratorAndTemperatureControlledCabinetModeStartUpModeAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeClusterStartUpModeAttributeCallbackType>(CallbackFn,
+                                                                                                                         this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRefrigeratorAndTemperatureControlledCabinetModeStartUpModeAttributeCallback::
+    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeStartUpModeAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRefrigeratorAndTemperatureControlledCabinetModeStartUpModeAttributeCallback::CallbackFn(
     void * context, const chip::app::DataModel::Nullable<uint8_t> & value)
 {
     chip::DeviceLayer::StackUnlock unlock;
@@ -21118,8 +20993,8 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCal
     jobject javaCallbackRef;
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCallback, decltype(&maybeDestroy)>
-        cppCallback(reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCallback *>(context),
+    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeStartUpModeAttributeCallback, decltype(&maybeDestroy)>
+        cppCallback(reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeStartUpModeAttributeCallback *>(context),
                     maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
@@ -21147,12 +21022,10 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectOnModeAttributeCal
     env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
 }
 
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandListAttributeCallback::
-    CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandListAttributeCallback(jobject javaCallback,
-                                                                                                   bool keepAlive) :
-    chip::Callback::Callback<
-        CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectClusterGeneratedCommandListAttributeCallbackType>(CallbackFn,
-                                                                                                                   this),
+CHIPRefrigeratorAndTemperatureControlledCabinetModeOnModeAttributeCallback::
+    CHIPRefrigeratorAndTemperatureControlledCabinetModeOnModeAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeClusterOnModeAttributeCallbackType>(CallbackFn,
+                                                                                                                    this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -21169,8 +21042,8 @@ CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandListAtt
     }
 }
 
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandListAttributeCallback::
-    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandListAttributeCallback()
+CHIPRefrigeratorAndTemperatureControlledCabinetModeOnModeAttributeCallback::
+    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeOnModeAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21181,8 +21054,8 @@ CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandListAtt
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
+void CHIPRefrigeratorAndTemperatureControlledCabinetModeOnModeAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::Nullable<uint8_t> & value)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -21190,13 +21063,9 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandLi
     jobject javaCallbackRef;
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandListAttributeCallback,
-                    decltype(&maybeDestroy)>
-        cppCallback(
-            reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandListAttributeCallback *>(
-                context),
-            maybeDestroy);
+    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeOnModeAttributeCallback, decltype(&maybeDestroy)>
+        cppCallback(reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeOnModeAttributeCallback *>(context),
+                    maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -21204,109 +21073,28 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectGeneratedCommandLi
                    ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
 
     jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
     VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
 
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
+    jobject javaValue;
+    if (value.IsNull())
     {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+        javaValue = nullptr;
+    }
+    else
+    {
+        std::string javaValueClassName     = "java/lang/Integer";
+        std::string javaValueCtorSignature = "(I)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
+                                                                      value.Value(), javaValue);
     }
 
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
 }
 
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAcceptedCommandListAttributeCallback::
-    CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAcceptedCommandListAttributeCallback(jobject javaCallback,
-                                                                                                  bool keepAlive) :
-    chip::Callback::Callback<
-        CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAcceptedCommandListAttributeCallback::
-    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAcceptedCommandListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAcceptedCommandListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAcceptedCommandListAttributeCallback,
-                    decltype(&maybeDestroy)>
-        cppCallback(
-            reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAcceptedCommandListAttributeCallback *>(
-                context),
-            maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttributeCallback::
-    CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttributeCallback(jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectClusterEventListAttributeCallbackType>(
+CHIPRefrigeratorAndTemperatureControlledCabinetModeGeneratedCommandListAttributeCallback::
+    CHIPRefrigeratorAndTemperatureControlledCabinetModeGeneratedCommandListAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeClusterGeneratedCommandListAttributeCallbackType>(
         CallbackFn, this),
     keepAlive(keepAlive)
 {
@@ -21324,8 +21112,8 @@ CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttributeCallb
     }
 }
 
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttributeCallback::
-    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttributeCallback()
+CHIPRefrigeratorAndTemperatureControlledCabinetModeGeneratedCommandListAttributeCallback::
+    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeGeneratedCommandListAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21336,7 +21124,159 @@ CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttributeCallb
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttributeCallback::CallbackFn(
+void CHIPRefrigeratorAndTemperatureControlledCabinetModeGeneratedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeGeneratedCommandListAttributeCallback,
+                    decltype(&maybeDestroy)>
+        cppCallback(
+            reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeGeneratedCommandListAttributeCallback *>(context),
+            maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRefrigeratorAndTemperatureControlledCabinetModeAcceptedCommandListAttributeCallback::
+    CHIPRefrigeratorAndTemperatureControlledCabinetModeAcceptedCommandListAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeClusterAcceptedCommandListAttributeCallbackType>(
+        CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRefrigeratorAndTemperatureControlledCabinetModeAcceptedCommandListAttributeCallback::
+    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeAcceptedCommandListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRefrigeratorAndTemperatureControlledCabinetModeAcceptedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeAcceptedCommandListAttributeCallback,
+                    decltype(&maybeDestroy)>
+        cppCallback(
+            reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeAcceptedCommandListAttributeCallback *>(context),
+            maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRefrigeratorAndTemperatureControlledCabinetModeEventListAttributeCallback::
+    CHIPRefrigeratorAndTemperatureControlledCabinetModeEventListAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeClusterEventListAttributeCallbackType>(CallbackFn,
+                                                                                                                       this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRefrigeratorAndTemperatureControlledCabinetModeEventListAttributeCallback::
+    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeEventListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRefrigeratorAndTemperatureControlledCabinetModeEventListAttributeCallback::CallbackFn(
     void * context, const chip::app::DataModel::DecodableList<chip::EventId> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
@@ -21346,10 +21286,9 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttribute
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttributeCallback, decltype(&maybeDestroy)>
-        cppCallback(
-            reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttributeCallback *>(context),
-            maybeDestroy);
+    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeEventListAttributeCallback, decltype(&maybeDestroy)>
+        cppCallback(reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeEventListAttributeCallback *>(context),
+                    maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -21379,9 +21318,9 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectEventListAttribute
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttributeCallback::
-    CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttributeCallback(jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectClusterAttributeListAttributeCallbackType>(
+CHIPRefrigeratorAndTemperatureControlledCabinetModeAttributeListAttributeCallback::
+    CHIPRefrigeratorAndTemperatureControlledCabinetModeAttributeListAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRefrigeratorAndTemperatureControlledCabinetModeClusterAttributeListAttributeCallbackType>(
         CallbackFn, this),
     keepAlive(keepAlive)
 {
@@ -21399,8 +21338,8 @@ CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttributeC
     }
 }
 
-CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttributeCallback::
-    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttributeCallback()
+CHIPRefrigeratorAndTemperatureControlledCabinetModeAttributeListAttributeCallback::
+    ~CHIPRefrigeratorAndTemperatureControlledCabinetModeAttributeListAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21411,7 +21350,7 @@ CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttributeC
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttributeCallback::CallbackFn(
+void CHIPRefrigeratorAndTemperatureControlledCabinetModeAttributeListAttributeCallback::CallbackFn(
     void * context, const chip::app::DataModel::DecodableList<chip::AttributeId> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
@@ -21421,11 +21360,9 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttri
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttributeCallback,
-                    decltype(&maybeDestroy)>
-        cppCallback(
-            reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttributeCallback *>(context),
-            maybeDestroy);
+    std::unique_ptr<CHIPRefrigeratorAndTemperatureControlledCabinetModeAttributeListAttributeCallback, decltype(&maybeDestroy)>
+        cppCallback(reinterpret_cast<CHIPRefrigeratorAndTemperatureControlledCabinetModeAttributeListAttributeCallback *>(context),
+                    maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -21455,9 +21392,75 @@ void CHIPRefrigeratorAndTemperatureControlledCabinetModeSelectAttributeListAttri
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPRvcRunModeSelectSupportedModesAttributeCallback::CHIPRvcRunModeSelectSupportedModesAttributeCallback(jobject javaCallback,
+CHIPWasherControlsSpinSpeedsAttributeCallback::CHIPWasherControlsSpinSpeedsAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPWasherControlsClusterSpinSpeedsAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPWasherControlsSpinSpeedsAttributeCallback::~CHIPWasherControlsSpinSpeedsAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPWasherControlsSpinSpeedsAttributeCallback::CallbackFn(void * context,
+                                                               const chip::app::DataModel::DecodableList<chip::CharSpan> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPWasherControlsSpinSpeedsAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPWasherControlsSpinSpeedsAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_0, newElement_0));
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPWasherControlsSpinSpeedCurrentAttributeCallback::CHIPWasherControlsSpinSpeedCurrentAttributeCallback(jobject javaCallback,
                                                                                                          bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcRunModeSelectClusterSupportedModesAttributeCallbackType>(CallbackFn, this),
+    chip::Callback::Callback<CHIPWasherControlsClusterSpinSpeedCurrentAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -21474,7 +21477,7 @@ CHIPRvcRunModeSelectSupportedModesAttributeCallback::CHIPRvcRunModeSelectSupport
     }
 }
 
-CHIPRvcRunModeSelectSupportedModesAttributeCallback::~CHIPRvcRunModeSelectSupportedModesAttributeCallback()
+CHIPWasherControlsSpinSpeedCurrentAttributeCallback::~CHIPWasherControlsSpinSpeedCurrentAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21485,10 +21488,142 @@ CHIPRvcRunModeSelectSupportedModesAttributeCallback::~CHIPRvcRunModeSelectSuppor
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRvcRunModeSelectSupportedModesAttributeCallback::CallbackFn(
-    void * context,
-    const chip::app::DataModel::DecodableList<chip::app::Clusters::RvcRunModeSelect::Structs::ModeOptionStruct::DecodableType> &
-        list)
+void CHIPWasherControlsSpinSpeedCurrentAttributeCallback::CallbackFn(void * context,
+                                                                     const chip::app::DataModel::Nullable<uint8_t> & value)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+    std::unique_ptr<CHIPWasherControlsSpinSpeedCurrentAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPWasherControlsSpinSpeedCurrentAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject javaValue;
+    if (value.IsNull())
+    {
+        javaValue = nullptr;
+    }
+    else
+    {
+        std::string javaValueClassName     = "java/lang/Integer";
+        std::string javaValueCtorSignature = "(I)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
+                                                                      value.Value(), javaValue);
+    }
+
+    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
+}
+
+CHIPWasherControlsNumberOfRinsesAttributeCallback::CHIPWasherControlsNumberOfRinsesAttributeCallback(jobject javaCallback,
+                                                                                                     bool keepAlive) :
+    chip::Callback::Callback<CHIPWasherControlsClusterNumberOfRinsesAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPWasherControlsNumberOfRinsesAttributeCallback::~CHIPWasherControlsNumberOfRinsesAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPWasherControlsNumberOfRinsesAttributeCallback::CallbackFn(void * context,
+                                                                   const chip::app::DataModel::Nullable<uint8_t> & value)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+    std::unique_ptr<CHIPWasherControlsNumberOfRinsesAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPWasherControlsNumberOfRinsesAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject javaValue;
+    if (value.IsNull())
+    {
+        javaValue = nullptr;
+    }
+    else
+    {
+        std::string javaValueClassName     = "java/lang/Integer";
+        std::string javaValueCtorSignature = "(I)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
+                                                                      value.Value(), javaValue);
+    }
+
+    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
+}
+
+CHIPWasherControlsGeneratedCommandListAttributeCallback::CHIPWasherControlsGeneratedCommandListAttributeCallback(
+    jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPWasherControlsClusterGeneratedCommandListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPWasherControlsGeneratedCommandListAttributeCallback::~CHIPWasherControlsGeneratedCommandListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPWasherControlsGeneratedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -21497,8 +21632,289 @@ void CHIPRvcRunModeSelectSupportedModesAttributeCallback::CallbackFn(
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPRvcRunModeSelectSupportedModesAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcRunModeSelectSupportedModesAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPWasherControlsGeneratedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPWasherControlsGeneratedCommandListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPWasherControlsAcceptedCommandListAttributeCallback::CHIPWasherControlsAcceptedCommandListAttributeCallback(jobject javaCallback,
+                                                                                                               bool keepAlive) :
+    chip::Callback::Callback<CHIPWasherControlsClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPWasherControlsAcceptedCommandListAttributeCallback::~CHIPWasherControlsAcceptedCommandListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPWasherControlsAcceptedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPWasherControlsAcceptedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPWasherControlsAcceptedCommandListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPWasherControlsEventListAttributeCallback::CHIPWasherControlsEventListAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPWasherControlsClusterEventListAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPWasherControlsEventListAttributeCallback::~CHIPWasherControlsEventListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPWasherControlsEventListAttributeCallback::CallbackFn(void * context,
+                                                              const chip::app::DataModel::DecodableList<chip::EventId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPWasherControlsEventListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPWasherControlsEventListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPWasherControlsAttributeListAttributeCallback::CHIPWasherControlsAttributeListAttributeCallback(jobject javaCallback,
+                                                                                                   bool keepAlive) :
+    chip::Callback::Callback<CHIPWasherControlsClusterAttributeListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPWasherControlsAttributeListAttributeCallback::~CHIPWasherControlsAttributeListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPWasherControlsAttributeListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::AttributeId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPWasherControlsAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPWasherControlsAttributeListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcRunModeSupportedModesAttributeCallback::CHIPRvcRunModeSupportedModesAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcRunModeClusterSupportedModesAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcRunModeSupportedModesAttributeCallback::~CHIPRvcRunModeSupportedModesAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcRunModeSupportedModesAttributeCallback::CallbackFn(
+    void * context,
+    const chip::app::DataModel::DecodableList<chip::app::Clusters::RvcRunMode::Structs::ModeOptionStruct::DecodableType> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcRunModeSupportedModesAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcRunModeSupportedModesAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -21552,53 +21968,41 @@ void CHIPRvcRunModeSelectSupportedModesAttributeCallback::CallbackFn(
             std::string newElement_2_valueCtorSignature = "(I)V";
             chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
                 newElement_2_valueClassName.c_str(), newElement_2_valueCtorSignature.c_str(), entry_2.value, newElement_2_value);
-            jobject newElement_2_tagName;
-            if (!entry_2.tagName.HasValue())
-            {
-                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_tagName);
-            }
-            else
-            {
-                jobject newElement_2_tagNameInsideOptional;
-                LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_2.tagName.Value(),
-                                                                                     newElement_2_tagNameInsideOptional));
-                chip::JniReferences::GetInstance().CreateOptional(newElement_2_tagNameInsideOptional, newElement_2_tagName);
-            }
 
             jclass modeTagStructStructClass_3;
             err = chip::JniReferences::GetInstance().GetClassRef(
-                env, "chip/devicecontroller/ChipStructs$RvcRunModeSelectClusterModeTagStruct", modeTagStructStructClass_3);
+                env, "chip/devicecontroller/ChipStructs$RvcRunModeClusterModeTagStruct", modeTagStructStructClass_3);
             if (err != CHIP_NO_ERROR)
             {
-                ChipLogError(Zcl, "Could not find class ChipStructs$RvcRunModeSelectClusterModeTagStruct");
+                ChipLogError(Zcl, "Could not find class ChipStructs$RvcRunModeClusterModeTagStruct");
                 return;
             }
-            jmethodID modeTagStructStructCtor_3 = env->GetMethodID(
-                modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;Ljava/util/Optional;)V");
+            jmethodID modeTagStructStructCtor_3 =
+                env->GetMethodID(modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;)V");
             if (modeTagStructStructCtor_3 == nullptr)
             {
-                ChipLogError(Zcl, "Could not find ChipStructs$RvcRunModeSelectClusterModeTagStruct constructor");
+                ChipLogError(Zcl, "Could not find ChipStructs$RvcRunModeClusterModeTagStruct constructor");
                 return;
             }
 
-            newElement_2 = env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode,
-                                          newElement_2_value, newElement_2_tagName);
+            newElement_2 =
+                env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode, newElement_2_value);
             chip::JniReferences::GetInstance().AddToList(newElement_0_modeTags, newElement_2);
         }
 
         jclass modeOptionStructStructClass_1;
         err = chip::JniReferences::GetInstance().GetClassRef(
-            env, "chip/devicecontroller/ChipStructs$RvcRunModeSelectClusterModeOptionStruct", modeOptionStructStructClass_1);
+            env, "chip/devicecontroller/ChipStructs$RvcRunModeClusterModeOptionStruct", modeOptionStructStructClass_1);
         if (err != CHIP_NO_ERROR)
         {
-            ChipLogError(Zcl, "Could not find class ChipStructs$RvcRunModeSelectClusterModeOptionStruct");
+            ChipLogError(Zcl, "Could not find class ChipStructs$RvcRunModeClusterModeOptionStruct");
             return;
         }
         jmethodID modeOptionStructStructCtor_1 = env->GetMethodID(modeOptionStructStructClass_1, "<init>",
                                                                   "(Ljava/lang/String;Ljava/lang/Integer;Ljava/util/ArrayList;)V");
         if (modeOptionStructStructCtor_1 == nullptr)
         {
-            ChipLogError(Zcl, "Could not find ChipStructs$RvcRunModeSelectClusterModeOptionStruct constructor");
+            ChipLogError(Zcl, "Could not find ChipStructs$RvcRunModeClusterModeOptionStruct constructor");
             return;
         }
 
@@ -21611,10 +22015,8 @@ void CHIPRvcRunModeSelectSupportedModesAttributeCallback::CallbackFn(
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPRvcRunModeSelectStartUpModeAttributeCallback::CHIPRvcRunModeSelectStartUpModeAttributeCallback(jobject javaCallback,
-                                                                                                   bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcRunModeSelectClusterStartUpModeAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
+CHIPRvcRunModeStartUpModeAttributeCallback::CHIPRvcRunModeStartUpModeAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcRunModeClusterStartUpModeAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21630,7 +22032,7 @@ CHIPRvcRunModeSelectStartUpModeAttributeCallback::CHIPRvcRunModeSelectStartUpMod
     }
 }
 
-CHIPRvcRunModeSelectStartUpModeAttributeCallback::~CHIPRvcRunModeSelectStartUpModeAttributeCallback()
+CHIPRvcRunModeStartUpModeAttributeCallback::~CHIPRvcRunModeStartUpModeAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21641,8 +22043,7 @@ CHIPRvcRunModeSelectStartUpModeAttributeCallback::~CHIPRvcRunModeSelectStartUpMo
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRvcRunModeSelectStartUpModeAttributeCallback::CallbackFn(void * context,
-                                                                  const chip::app::DataModel::Nullable<uint8_t> & value)
+void CHIPRvcRunModeStartUpModeAttributeCallback::CallbackFn(void * context, const chip::app::DataModel::Nullable<uint8_t> & value)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -21650,8 +22051,8 @@ void CHIPRvcRunModeSelectStartUpModeAttributeCallback::CallbackFn(void * context
     jobject javaCallbackRef;
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-    std::unique_ptr<CHIPRvcRunModeSelectStartUpModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcRunModeSelectStartUpModeAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPRvcRunModeStartUpModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcRunModeStartUpModeAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -21678,8 +22079,8 @@ void CHIPRvcRunModeSelectStartUpModeAttributeCallback::CallbackFn(void * context
     env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
 }
 
-CHIPRvcRunModeSelectOnModeAttributeCallback::CHIPRvcRunModeSelectOnModeAttributeCallback(jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcRunModeSelectClusterOnModeAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+CHIPRvcRunModeOnModeAttributeCallback::CHIPRvcRunModeOnModeAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcRunModeClusterOnModeAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21695,7 +22096,7 @@ CHIPRvcRunModeSelectOnModeAttributeCallback::CHIPRvcRunModeSelectOnModeAttribute
     }
 }
 
-CHIPRvcRunModeSelectOnModeAttributeCallback::~CHIPRvcRunModeSelectOnModeAttributeCallback()
+CHIPRvcRunModeOnModeAttributeCallback::~CHIPRvcRunModeOnModeAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21706,7 +22107,7 @@ CHIPRvcRunModeSelectOnModeAttributeCallback::~CHIPRvcRunModeSelectOnModeAttribut
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRvcRunModeSelectOnModeAttributeCallback::CallbackFn(void * context, const chip::app::DataModel::Nullable<uint8_t> & value)
+void CHIPRvcRunModeOnModeAttributeCallback::CallbackFn(void * context, const chip::app::DataModel::Nullable<uint8_t> & value)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -21714,8 +22115,8 @@ void CHIPRvcRunModeSelectOnModeAttributeCallback::CallbackFn(void * context, con
     jobject javaCallbackRef;
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-    std::unique_ptr<CHIPRvcRunModeSelectOnModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcRunModeSelectOnModeAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPRvcRunModeOnModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcRunModeOnModeAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -21742,9 +22143,9 @@ void CHIPRvcRunModeSelectOnModeAttributeCallback::CallbackFn(void * context, con
     env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
 }
 
-CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback::CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcRunModeSelectClusterGeneratedCommandListAttributeCallbackType>(CallbackFn, this),
+CHIPRvcRunModeGeneratedCommandListAttributeCallback::CHIPRvcRunModeGeneratedCommandListAttributeCallback(jobject javaCallback,
+                                                                                                         bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcRunModeClusterGeneratedCommandListAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -21761,7 +22162,7 @@ CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback::CHIPRvcRunModeSelectG
     }
 }
 
-CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback::~CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback()
+CHIPRvcRunModeGeneratedCommandListAttributeCallback::~CHIPRvcRunModeGeneratedCommandListAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21772,7 +22173,7 @@ CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback::~CHIPRvcRunModeSelect
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
+void CHIPRvcRunModeGeneratedCommandListAttributeCallback::CallbackFn(
     void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
@@ -21782,8 +22183,8 @@ void CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPRvcRunModeGeneratedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcRunModeGeneratedCommandListAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -21813,151 +22214,9 @@ void CHIPRvcRunModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPRvcRunModeSelectAcceptedCommandListAttributeCallback::CHIPRvcRunModeSelectAcceptedCommandListAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcRunModeSelectClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPRvcRunModeSelectAcceptedCommandListAttributeCallback::~CHIPRvcRunModeSelectAcceptedCommandListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPRvcRunModeSelectAcceptedCommandListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPRvcRunModeSelectAcceptedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcRunModeSelectAcceptedCommandListAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPRvcRunModeSelectEventListAttributeCallback::CHIPRvcRunModeSelectEventListAttributeCallback(jobject javaCallback,
-                                                                                               bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcRunModeSelectClusterEventListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPRvcRunModeSelectEventListAttributeCallback::~CHIPRvcRunModeSelectEventListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPRvcRunModeSelectEventListAttributeCallback::CallbackFn(void * context,
-                                                                const chip::app::DataModel::DecodableList<chip::EventId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPRvcRunModeSelectEventListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcRunModeSelectEventListAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPRvcRunModeSelectAttributeListAttributeCallback::CHIPRvcRunModeSelectAttributeListAttributeCallback(jobject javaCallback,
+CHIPRvcRunModeAcceptedCommandListAttributeCallback::CHIPRvcRunModeAcceptedCommandListAttributeCallback(jobject javaCallback,
                                                                                                        bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcRunModeSelectClusterAttributeListAttributeCallbackType>(CallbackFn, this),
+    chip::Callback::Callback<CHIPRvcRunModeClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -21974,7 +22233,7 @@ CHIPRvcRunModeSelectAttributeListAttributeCallback::CHIPRvcRunModeSelectAttribut
     }
 }
 
-CHIPRvcRunModeSelectAttributeListAttributeCallback::~CHIPRvcRunModeSelectAttributeListAttributeCallback()
+CHIPRvcRunModeAcceptedCommandListAttributeCallback::~CHIPRvcRunModeAcceptedCommandListAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -21985,8 +22244,8 @@ CHIPRvcRunModeSelectAttributeListAttributeCallback::~CHIPRvcRunModeSelectAttribu
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRvcRunModeSelectAttributeListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::AttributeId> & list)
+void CHIPRvcRunModeAcceptedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -21995,8 +22254,8 @@ void CHIPRvcRunModeSelectAttributeListAttributeCallback::CallbackFn(
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPRvcRunModeSelectAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcRunModeSelectAttributeListAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPRvcRunModeAcceptedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcRunModeAcceptedCommandListAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -22026,9 +22285,418 @@ void CHIPRvcRunModeSelectAttributeListAttributeCallback::CallbackFn(
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPRvcCleanModeSelectSupportedModesAttributeCallback::CHIPRvcCleanModeSelectSupportedModesAttributeCallback(jobject javaCallback,
+CHIPRvcRunModeEventListAttributeCallback::CHIPRvcRunModeEventListAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcRunModeClusterEventListAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcRunModeEventListAttributeCallback::~CHIPRvcRunModeEventListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcRunModeEventListAttributeCallback::CallbackFn(void * context,
+                                                          const chip::app::DataModel::DecodableList<chip::EventId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcRunModeEventListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcRunModeEventListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcRunModeAttributeListAttributeCallback::CHIPRvcRunModeAttributeListAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcRunModeClusterAttributeListAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcRunModeAttributeListAttributeCallback::~CHIPRvcRunModeAttributeListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcRunModeAttributeListAttributeCallback::CallbackFn(void * context,
+                                                              const chip::app::DataModel::DecodableList<chip::AttributeId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcRunModeAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcRunModeAttributeListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcCleanModeSupportedModesAttributeCallback::CHIPRvcCleanModeSupportedModesAttributeCallback(jobject javaCallback,
+                                                                                                 bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcCleanModeClusterSupportedModesAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcCleanModeSupportedModesAttributeCallback::~CHIPRvcCleanModeSupportedModesAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcCleanModeSupportedModesAttributeCallback::CallbackFn(
+    void * context,
+    const chip::app::DataModel::DecodableList<chip::app::Clusters::RvcCleanMode::Structs::ModeOptionStruct::DecodableType> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcCleanModeSupportedModesAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcCleanModeSupportedModesAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        jobject newElement_0_label;
+        LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_0.label, newElement_0_label));
+        jobject newElement_0_mode;
+        std::string newElement_0_modeClassName     = "java/lang/Integer";
+        std::string newElement_0_modeCtorSignature = "(I)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(
+            newElement_0_modeClassName.c_str(), newElement_0_modeCtorSignature.c_str(), entry_0.mode, newElement_0_mode);
+        jobject newElement_0_modeTags;
+        chip::JniReferences::GetInstance().CreateArrayList(newElement_0_modeTags);
+
+        auto iter_newElement_0_modeTags_2 = entry_0.modeTags.begin();
+        while (iter_newElement_0_modeTags_2.Next())
+        {
+            auto & entry_2 = iter_newElement_0_modeTags_2.GetValue();
+            jobject newElement_2;
+            jobject newElement_2_mfgCode;
+            if (!entry_2.mfgCode.HasValue())
+            {
+                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_mfgCode);
+            }
+            else
+            {
+                jobject newElement_2_mfgCodeInsideOptional;
+                std::string newElement_2_mfgCodeInsideOptionalClassName     = "java/lang/Integer";
+                std::string newElement_2_mfgCodeInsideOptionalCtorSignature = "(I)V";
+                chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
+                    newElement_2_mfgCodeInsideOptionalClassName.c_str(), newElement_2_mfgCodeInsideOptionalCtorSignature.c_str(),
+                    static_cast<uint16_t>(entry_2.mfgCode.Value()), newElement_2_mfgCodeInsideOptional);
+                chip::JniReferences::GetInstance().CreateOptional(newElement_2_mfgCodeInsideOptional, newElement_2_mfgCode);
+            }
+            jobject newElement_2_value;
+            std::string newElement_2_valueClassName     = "java/lang/Integer";
+            std::string newElement_2_valueCtorSignature = "(I)V";
+            chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
+                newElement_2_valueClassName.c_str(), newElement_2_valueCtorSignature.c_str(), entry_2.value, newElement_2_value);
+
+            jclass modeTagStructStructClass_3;
+            err = chip::JniReferences::GetInstance().GetClassRef(
+                env, "chip/devicecontroller/ChipStructs$RvcCleanModeClusterModeTagStruct", modeTagStructStructClass_3);
+            if (err != CHIP_NO_ERROR)
+            {
+                ChipLogError(Zcl, "Could not find class ChipStructs$RvcCleanModeClusterModeTagStruct");
+                return;
+            }
+            jmethodID modeTagStructStructCtor_3 =
+                env->GetMethodID(modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;)V");
+            if (modeTagStructStructCtor_3 == nullptr)
+            {
+                ChipLogError(Zcl, "Could not find ChipStructs$RvcCleanModeClusterModeTagStruct constructor");
+                return;
+            }
+
+            newElement_2 =
+                env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode, newElement_2_value);
+            chip::JniReferences::GetInstance().AddToList(newElement_0_modeTags, newElement_2);
+        }
+
+        jclass modeOptionStructStructClass_1;
+        err = chip::JniReferences::GetInstance().GetClassRef(
+            env, "chip/devicecontroller/ChipStructs$RvcCleanModeClusterModeOptionStruct", modeOptionStructStructClass_1);
+        if (err != CHIP_NO_ERROR)
+        {
+            ChipLogError(Zcl, "Could not find class ChipStructs$RvcCleanModeClusterModeOptionStruct");
+            return;
+        }
+        jmethodID modeOptionStructStructCtor_1 = env->GetMethodID(modeOptionStructStructClass_1, "<init>",
+                                                                  "(Ljava/lang/String;Ljava/lang/Integer;Ljava/util/ArrayList;)V");
+        if (modeOptionStructStructCtor_1 == nullptr)
+        {
+            ChipLogError(Zcl, "Could not find ChipStructs$RvcCleanModeClusterModeOptionStruct constructor");
+            return;
+        }
+
+        newElement_0 = env->NewObject(modeOptionStructStructClass_1, modeOptionStructStructCtor_1, newElement_0_label,
+                                      newElement_0_mode, newElement_0_modeTags);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcCleanModeStartUpModeAttributeCallback::CHIPRvcCleanModeStartUpModeAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcCleanModeClusterStartUpModeAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcCleanModeStartUpModeAttributeCallback::~CHIPRvcCleanModeStartUpModeAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcCleanModeStartUpModeAttributeCallback::CallbackFn(void * context, const chip::app::DataModel::Nullable<uint8_t> & value)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+    std::unique_ptr<CHIPRvcCleanModeStartUpModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcCleanModeStartUpModeAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject javaValue;
+    if (value.IsNull())
+    {
+        javaValue = nullptr;
+    }
+    else
+    {
+        std::string javaValueClassName     = "java/lang/Integer";
+        std::string javaValueCtorSignature = "(I)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
+                                                                      value.Value(), javaValue);
+    }
+
+    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
+}
+
+CHIPRvcCleanModeOnModeAttributeCallback::CHIPRvcCleanModeOnModeAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcCleanModeClusterOnModeAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcCleanModeOnModeAttributeCallback::~CHIPRvcCleanModeOnModeAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcCleanModeOnModeAttributeCallback::CallbackFn(void * context, const chip::app::DataModel::Nullable<uint8_t> & value)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+    std::unique_ptr<CHIPRvcCleanModeOnModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcCleanModeOnModeAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject javaValue;
+    if (value.IsNull())
+    {
+        javaValue = nullptr;
+    }
+    else
+    {
+        std::string javaValueClassName     = "java/lang/Integer";
+        std::string javaValueCtorSignature = "(I)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
+                                                                      value.Value(), javaValue);
+    }
+
+    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
+}
+
+CHIPRvcCleanModeGeneratedCommandListAttributeCallback::CHIPRvcCleanModeGeneratedCommandListAttributeCallback(jobject javaCallback,
                                                                                                              bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcCleanModeSelectClusterSupportedModesAttributeCallbackType>(CallbackFn, this),
+    chip::Callback::Callback<CHIPRvcCleanModeClusterGeneratedCommandListAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -22045,7 +22713,7 @@ CHIPRvcCleanModeSelectSupportedModesAttributeCallback::CHIPRvcCleanModeSelectSup
     }
 }
 
-CHIPRvcCleanModeSelectSupportedModesAttributeCallback::~CHIPRvcCleanModeSelectSupportedModesAttributeCallback()
+CHIPRvcCleanModeGeneratedCommandListAttributeCallback::~CHIPRvcCleanModeGeneratedCommandListAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -22056,295 +22724,7 @@ CHIPRvcCleanModeSelectSupportedModesAttributeCallback::~CHIPRvcCleanModeSelectSu
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRvcCleanModeSelectSupportedModesAttributeCallback::CallbackFn(
-    void * context,
-    const chip::app::DataModel::DecodableList<chip::app::Clusters::RvcCleanModeSelect::Structs::ModeOptionStruct::DecodableType> &
-        list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPRvcCleanModeSelectSupportedModesAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcCleanModeSelectSupportedModesAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        jobject newElement_0_label;
-        LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_0.label, newElement_0_label));
-        jobject newElement_0_mode;
-        std::string newElement_0_modeClassName     = "java/lang/Integer";
-        std::string newElement_0_modeCtorSignature = "(I)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(
-            newElement_0_modeClassName.c_str(), newElement_0_modeCtorSignature.c_str(), entry_0.mode, newElement_0_mode);
-        jobject newElement_0_modeTags;
-        chip::JniReferences::GetInstance().CreateArrayList(newElement_0_modeTags);
-
-        auto iter_newElement_0_modeTags_2 = entry_0.modeTags.begin();
-        while (iter_newElement_0_modeTags_2.Next())
-        {
-            auto & entry_2 = iter_newElement_0_modeTags_2.GetValue();
-            jobject newElement_2;
-            jobject newElement_2_mfgCode;
-            if (!entry_2.mfgCode.HasValue())
-            {
-                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_mfgCode);
-            }
-            else
-            {
-                jobject newElement_2_mfgCodeInsideOptional;
-                std::string newElement_2_mfgCodeInsideOptionalClassName     = "java/lang/Integer";
-                std::string newElement_2_mfgCodeInsideOptionalCtorSignature = "(I)V";
-                chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
-                    newElement_2_mfgCodeInsideOptionalClassName.c_str(), newElement_2_mfgCodeInsideOptionalCtorSignature.c_str(),
-                    static_cast<uint16_t>(entry_2.mfgCode.Value()), newElement_2_mfgCodeInsideOptional);
-                chip::JniReferences::GetInstance().CreateOptional(newElement_2_mfgCodeInsideOptional, newElement_2_mfgCode);
-            }
-            jobject newElement_2_value;
-            std::string newElement_2_valueClassName     = "java/lang/Integer";
-            std::string newElement_2_valueCtorSignature = "(I)V";
-            chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
-                newElement_2_valueClassName.c_str(), newElement_2_valueCtorSignature.c_str(), entry_2.value, newElement_2_value);
-            jobject newElement_2_tagName;
-            if (!entry_2.tagName.HasValue())
-            {
-                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_tagName);
-            }
-            else
-            {
-                jobject newElement_2_tagNameInsideOptional;
-                LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_2.tagName.Value(),
-                                                                                     newElement_2_tagNameInsideOptional));
-                chip::JniReferences::GetInstance().CreateOptional(newElement_2_tagNameInsideOptional, newElement_2_tagName);
-            }
-
-            jclass modeTagStructStructClass_3;
-            err = chip::JniReferences::GetInstance().GetClassRef(
-                env, "chip/devicecontroller/ChipStructs$RvcCleanModeSelectClusterModeTagStruct", modeTagStructStructClass_3);
-            if (err != CHIP_NO_ERROR)
-            {
-                ChipLogError(Zcl, "Could not find class ChipStructs$RvcCleanModeSelectClusterModeTagStruct");
-                return;
-            }
-            jmethodID modeTagStructStructCtor_3 = env->GetMethodID(
-                modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;Ljava/util/Optional;)V");
-            if (modeTagStructStructCtor_3 == nullptr)
-            {
-                ChipLogError(Zcl, "Could not find ChipStructs$RvcCleanModeSelectClusterModeTagStruct constructor");
-                return;
-            }
-
-            newElement_2 = env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode,
-                                          newElement_2_value, newElement_2_tagName);
-            chip::JniReferences::GetInstance().AddToList(newElement_0_modeTags, newElement_2);
-        }
-
-        jclass modeOptionStructStructClass_1;
-        err = chip::JniReferences::GetInstance().GetClassRef(
-            env, "chip/devicecontroller/ChipStructs$RvcCleanModeSelectClusterModeOptionStruct", modeOptionStructStructClass_1);
-        if (err != CHIP_NO_ERROR)
-        {
-            ChipLogError(Zcl, "Could not find class ChipStructs$RvcCleanModeSelectClusterModeOptionStruct");
-            return;
-        }
-        jmethodID modeOptionStructStructCtor_1 = env->GetMethodID(modeOptionStructStructClass_1, "<init>",
-                                                                  "(Ljava/lang/String;Ljava/lang/Integer;Ljava/util/ArrayList;)V");
-        if (modeOptionStructStructCtor_1 == nullptr)
-        {
-            ChipLogError(Zcl, "Could not find ChipStructs$RvcCleanModeSelectClusterModeOptionStruct constructor");
-            return;
-        }
-
-        newElement_0 = env->NewObject(modeOptionStructStructClass_1, modeOptionStructStructCtor_1, newElement_0_label,
-                                      newElement_0_mode, newElement_0_modeTags);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPRvcCleanModeSelectStartUpModeAttributeCallback::CHIPRvcCleanModeSelectStartUpModeAttributeCallback(jobject javaCallback,
-                                                                                                       bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcCleanModeSelectClusterStartUpModeAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPRvcCleanModeSelectStartUpModeAttributeCallback::~CHIPRvcCleanModeSelectStartUpModeAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPRvcCleanModeSelectStartUpModeAttributeCallback::CallbackFn(void * context,
-                                                                    const chip::app::DataModel::Nullable<uint8_t> & value)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-    std::unique_ptr<CHIPRvcCleanModeSelectStartUpModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcCleanModeSelectStartUpModeAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject javaValue;
-    if (value.IsNull())
-    {
-        javaValue = nullptr;
-    }
-    else
-    {
-        std::string javaValueClassName     = "java/lang/Integer";
-        std::string javaValueCtorSignature = "(I)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
-                                                                      value.Value(), javaValue);
-    }
-
-    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
-}
-
-CHIPRvcCleanModeSelectOnModeAttributeCallback::CHIPRvcCleanModeSelectOnModeAttributeCallback(jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcCleanModeSelectClusterOnModeAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPRvcCleanModeSelectOnModeAttributeCallback::~CHIPRvcCleanModeSelectOnModeAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPRvcCleanModeSelectOnModeAttributeCallback::CallbackFn(void * context,
-                                                               const chip::app::DataModel::Nullable<uint8_t> & value)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-    std::unique_ptr<CHIPRvcCleanModeSelectOnModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcCleanModeSelectOnModeAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject javaValue;
-    if (value.IsNull())
-    {
-        javaValue = nullptr;
-    }
-    else
-    {
-        std::string javaValueClassName     = "java/lang/Integer";
-        std::string javaValueCtorSignature = "(I)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
-                                                                      value.Value(), javaValue);
-    }
-
-    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
-}
-
-CHIPRvcCleanModeSelectGeneratedCommandListAttributeCallback::CHIPRvcCleanModeSelectGeneratedCommandListAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcCleanModeSelectClusterGeneratedCommandListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPRvcCleanModeSelectGeneratedCommandListAttributeCallback::~CHIPRvcCleanModeSelectGeneratedCommandListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPRvcCleanModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
+void CHIPRvcCleanModeGeneratedCommandListAttributeCallback::CallbackFn(
     void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
@@ -22354,8 +22734,8 @@ void CHIPRvcCleanModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPRvcCleanModeSelectGeneratedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcCleanModeSelectGeneratedCommandListAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPRvcCleanModeGeneratedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcCleanModeGeneratedCommandListAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -22385,151 +22765,9 @@ void CHIPRvcCleanModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPRvcCleanModeSelectAcceptedCommandListAttributeCallback::CHIPRvcCleanModeSelectAcceptedCommandListAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcCleanModeSelectClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPRvcCleanModeSelectAcceptedCommandListAttributeCallback::~CHIPRvcCleanModeSelectAcceptedCommandListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPRvcCleanModeSelectAcceptedCommandListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPRvcCleanModeSelectAcceptedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcCleanModeSelectAcceptedCommandListAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPRvcCleanModeSelectEventListAttributeCallback::CHIPRvcCleanModeSelectEventListAttributeCallback(jobject javaCallback,
-                                                                                                   bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcCleanModeSelectClusterEventListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPRvcCleanModeSelectEventListAttributeCallback::~CHIPRvcCleanModeSelectEventListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPRvcCleanModeSelectEventListAttributeCallback::CallbackFn(void * context,
-                                                                  const chip::app::DataModel::DecodableList<chip::EventId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPRvcCleanModeSelectEventListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcCleanModeSelectEventListAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPRvcCleanModeSelectAttributeListAttributeCallback::CHIPRvcCleanModeSelectAttributeListAttributeCallback(jobject javaCallback,
+CHIPRvcCleanModeAcceptedCommandListAttributeCallback::CHIPRvcCleanModeAcceptedCommandListAttributeCallback(jobject javaCallback,
                                                                                                            bool keepAlive) :
-    chip::Callback::Callback<CHIPRvcCleanModeSelectClusterAttributeListAttributeCallbackType>(CallbackFn, this),
+    chip::Callback::Callback<CHIPRvcCleanModeClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -22546,7 +22784,7 @@ CHIPRvcCleanModeSelectAttributeListAttributeCallback::CHIPRvcCleanModeSelectAttr
     }
 }
 
-CHIPRvcCleanModeSelectAttributeListAttributeCallback::~CHIPRvcCleanModeSelectAttributeListAttributeCallback()
+CHIPRvcCleanModeAcceptedCommandListAttributeCallback::~CHIPRvcCleanModeAcceptedCommandListAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -22557,8 +22795,8 @@ CHIPRvcCleanModeSelectAttributeListAttributeCallback::~CHIPRvcCleanModeSelectAtt
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPRvcCleanModeSelectAttributeListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::AttributeId> & list)
+void CHIPRvcCleanModeAcceptedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -22567,8 +22805,148 @@ void CHIPRvcCleanModeSelectAttributeListAttributeCallback::CallbackFn(
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPRvcCleanModeSelectAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPRvcCleanModeSelectAttributeListAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPRvcCleanModeAcceptedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcCleanModeAcceptedCommandListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcCleanModeEventListAttributeCallback::CHIPRvcCleanModeEventListAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcCleanModeClusterEventListAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcCleanModeEventListAttributeCallback::~CHIPRvcCleanModeEventListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcCleanModeEventListAttributeCallback::CallbackFn(void * context,
+                                                            const chip::app::DataModel::DecodableList<chip::EventId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcCleanModeEventListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcCleanModeEventListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcCleanModeAttributeListAttributeCallback::CHIPRvcCleanModeAttributeListAttributeCallback(jobject javaCallback,
+                                                                                               bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcCleanModeClusterAttributeListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcCleanModeAttributeListAttributeCallback::~CHIPRvcCleanModeAttributeListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcCleanModeAttributeListAttributeCallback::CallbackFn(void * context,
+                                                                const chip::app::DataModel::DecodableList<chip::AttributeId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcCleanModeAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcCleanModeAttributeListAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -22630,9 +23008,7 @@ CHIPTemperatureControlSupportedTemperatureLevelsAttributeCallback::
 }
 
 void CHIPTemperatureControlSupportedTemperatureLevelsAttributeCallback::CallbackFn(
-    void * context,
-    const chip::app::DataModel::DecodableList<
-        chip::app::Clusters::TemperatureControl::Structs::TemperatureLevelStruct::DecodableType> & list)
+    void * context, const chip::app::DataModel::DecodableList<chip::CharSpan> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -22661,34 +23037,7 @@ void CHIPTemperatureControlSupportedTemperatureLevelsAttributeCallback::Callback
     {
         auto & entry_0 = iter_arrayListObj_0.GetValue();
         jobject newElement_0;
-        jobject newElement_0_label;
-        LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_0.label, newElement_0_label));
-        jobject newElement_0_temperatureLevel;
-        std::string newElement_0_temperatureLevelClassName     = "java/lang/Integer";
-        std::string newElement_0_temperatureLevelCtorSignature = "(I)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(newElement_0_temperatureLevelClassName.c_str(),
-                                                                      newElement_0_temperatureLevelCtorSignature.c_str(),
-                                                                      entry_0.temperatureLevel, newElement_0_temperatureLevel);
-
-        jclass temperatureLevelStructStructClass_1;
-        err = chip::JniReferences::GetInstance().GetClassRef(
-            env, "chip/devicecontroller/ChipStructs$TemperatureControlClusterTemperatureLevelStruct",
-            temperatureLevelStructStructClass_1);
-        if (err != CHIP_NO_ERROR)
-        {
-            ChipLogError(Zcl, "Could not find class ChipStructs$TemperatureControlClusterTemperatureLevelStruct");
-            return;
-        }
-        jmethodID temperatureLevelStructStructCtor_1 =
-            env->GetMethodID(temperatureLevelStructStructClass_1, "<init>", "(Ljava/lang/String;Ljava/lang/Integer;)V");
-        if (temperatureLevelStructStructCtor_1 == nullptr)
-        {
-            ChipLogError(Zcl, "Could not find ChipStructs$TemperatureControlClusterTemperatureLevelStruct constructor");
-            return;
-        }
-
-        newElement_0 = env->NewObject(temperatureLevelStructStructClass_1, temperatureLevelStructStructCtor_1, newElement_0_label,
-                                      newElement_0_temperatureLevel);
+        LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_0, newElement_0));
         chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
     }
 
@@ -23264,9 +23613,9 @@ void CHIPRefrigeratorAlarmAttributeListAttributeCallback::CallbackFn(
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPDishwasherModeSelectSupportedModesAttributeCallback::CHIPDishwasherModeSelectSupportedModesAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPDishwasherModeSelectClusterSupportedModesAttributeCallbackType>(CallbackFn, this),
+CHIPDishwasherModeSupportedModesAttributeCallback::CHIPDishwasherModeSupportedModesAttributeCallback(jobject javaCallback,
+                                                                                                     bool keepAlive) :
+    chip::Callback::Callback<CHIPDishwasherModeClusterSupportedModesAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -23283,7 +23632,7 @@ CHIPDishwasherModeSelectSupportedModesAttributeCallback::CHIPDishwasherModeSelec
     }
 }
 
-CHIPDishwasherModeSelectSupportedModesAttributeCallback::~CHIPDishwasherModeSelectSupportedModesAttributeCallback()
+CHIPDishwasherModeSupportedModesAttributeCallback::~CHIPDishwasherModeSupportedModesAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -23294,10 +23643,9 @@ CHIPDishwasherModeSelectSupportedModesAttributeCallback::~CHIPDishwasherModeSele
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPDishwasherModeSelectSupportedModesAttributeCallback::CallbackFn(
+void CHIPDishwasherModeSupportedModesAttributeCallback::CallbackFn(
     void * context,
-    const chip::app::DataModel::DecodableList<chip::app::Clusters::DishwasherModeSelect::Structs::ModeOptionStruct::DecodableType> &
-        list)
+    const chip::app::DataModel::DecodableList<chip::app::Clusters::DishwasherMode::Structs::ModeOptionStruct::DecodableType> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -23306,8 +23654,8 @@ void CHIPDishwasherModeSelectSupportedModesAttributeCallback::CallbackFn(
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPDishwasherModeSelectSupportedModesAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPDishwasherModeSelectSupportedModesAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPDishwasherModeSupportedModesAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPDishwasherModeSupportedModesAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -23361,53 +23709,41 @@ void CHIPDishwasherModeSelectSupportedModesAttributeCallback::CallbackFn(
             std::string newElement_2_valueCtorSignature = "(I)V";
             chip::JniReferences::GetInstance().CreateBoxedObject<uint16_t>(
                 newElement_2_valueClassName.c_str(), newElement_2_valueCtorSignature.c_str(), entry_2.value, newElement_2_value);
-            jobject newElement_2_tagName;
-            if (!entry_2.tagName.HasValue())
-            {
-                chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_2_tagName);
-            }
-            else
-            {
-                jobject newElement_2_tagNameInsideOptional;
-                LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_2.tagName.Value(),
-                                                                                     newElement_2_tagNameInsideOptional));
-                chip::JniReferences::GetInstance().CreateOptional(newElement_2_tagNameInsideOptional, newElement_2_tagName);
-            }
 
             jclass modeTagStructStructClass_3;
             err = chip::JniReferences::GetInstance().GetClassRef(
-                env, "chip/devicecontroller/ChipStructs$DishwasherModeSelectClusterModeTagStruct", modeTagStructStructClass_3);
+                env, "chip/devicecontroller/ChipStructs$DishwasherModeClusterModeTagStruct", modeTagStructStructClass_3);
             if (err != CHIP_NO_ERROR)
             {
-                ChipLogError(Zcl, "Could not find class ChipStructs$DishwasherModeSelectClusterModeTagStruct");
+                ChipLogError(Zcl, "Could not find class ChipStructs$DishwasherModeClusterModeTagStruct");
                 return;
             }
-            jmethodID modeTagStructStructCtor_3 = env->GetMethodID(
-                modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;Ljava/util/Optional;)V");
+            jmethodID modeTagStructStructCtor_3 =
+                env->GetMethodID(modeTagStructStructClass_3, "<init>", "(Ljava/util/Optional;Ljava/lang/Integer;)V");
             if (modeTagStructStructCtor_3 == nullptr)
             {
-                ChipLogError(Zcl, "Could not find ChipStructs$DishwasherModeSelectClusterModeTagStruct constructor");
+                ChipLogError(Zcl, "Could not find ChipStructs$DishwasherModeClusterModeTagStruct constructor");
                 return;
             }
 
-            newElement_2 = env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode,
-                                          newElement_2_value, newElement_2_tagName);
+            newElement_2 =
+                env->NewObject(modeTagStructStructClass_3, modeTagStructStructCtor_3, newElement_2_mfgCode, newElement_2_value);
             chip::JniReferences::GetInstance().AddToList(newElement_0_modeTags, newElement_2);
         }
 
         jclass modeOptionStructStructClass_1;
         err = chip::JniReferences::GetInstance().GetClassRef(
-            env, "chip/devicecontroller/ChipStructs$DishwasherModeSelectClusterModeOptionStruct", modeOptionStructStructClass_1);
+            env, "chip/devicecontroller/ChipStructs$DishwasherModeClusterModeOptionStruct", modeOptionStructStructClass_1);
         if (err != CHIP_NO_ERROR)
         {
-            ChipLogError(Zcl, "Could not find class ChipStructs$DishwasherModeSelectClusterModeOptionStruct");
+            ChipLogError(Zcl, "Could not find class ChipStructs$DishwasherModeClusterModeOptionStruct");
             return;
         }
         jmethodID modeOptionStructStructCtor_1 = env->GetMethodID(modeOptionStructStructClass_1, "<init>",
                                                                   "(Ljava/lang/String;Ljava/lang/Integer;Ljava/util/ArrayList;)V");
         if (modeOptionStructStructCtor_1 == nullptr)
         {
-            ChipLogError(Zcl, "Could not find ChipStructs$DishwasherModeSelectClusterModeOptionStruct constructor");
+            ChipLogError(Zcl, "Could not find ChipStructs$DishwasherModeClusterModeOptionStruct constructor");
             return;
         }
 
@@ -23420,9 +23756,9 @@ void CHIPDishwasherModeSelectSupportedModesAttributeCallback::CallbackFn(
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPDishwasherModeSelectStartUpModeAttributeCallback::CHIPDishwasherModeSelectStartUpModeAttributeCallback(jobject javaCallback,
-                                                                                                           bool keepAlive) :
-    chip::Callback::Callback<CHIPDishwasherModeSelectClusterStartUpModeAttributeCallbackType>(CallbackFn, this),
+CHIPDishwasherModeStartUpModeAttributeCallback::CHIPDishwasherModeStartUpModeAttributeCallback(jobject javaCallback,
+                                                                                               bool keepAlive) :
+    chip::Callback::Callback<CHIPDishwasherModeClusterStartUpModeAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -23439,7 +23775,7 @@ CHIPDishwasherModeSelectStartUpModeAttributeCallback::CHIPDishwasherModeSelectSt
     }
 }
 
-CHIPDishwasherModeSelectStartUpModeAttributeCallback::~CHIPDishwasherModeSelectStartUpModeAttributeCallback()
+CHIPDishwasherModeStartUpModeAttributeCallback::~CHIPDishwasherModeStartUpModeAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -23450,8 +23786,8 @@ CHIPDishwasherModeSelectStartUpModeAttributeCallback::~CHIPDishwasherModeSelectS
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPDishwasherModeSelectStartUpModeAttributeCallback::CallbackFn(void * context,
-                                                                      const chip::app::DataModel::Nullable<uint8_t> & value)
+void CHIPDishwasherModeStartUpModeAttributeCallback::CallbackFn(void * context,
+                                                                const chip::app::DataModel::Nullable<uint8_t> & value)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -23459,8 +23795,8 @@ void CHIPDishwasherModeSelectStartUpModeAttributeCallback::CallbackFn(void * con
     jobject javaCallbackRef;
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-    std::unique_ptr<CHIPDishwasherModeSelectStartUpModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPDishwasherModeSelectStartUpModeAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPDishwasherModeStartUpModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPDishwasherModeStartUpModeAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -23487,10 +23823,8 @@ void CHIPDishwasherModeSelectStartUpModeAttributeCallback::CallbackFn(void * con
     env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
 }
 
-CHIPDishwasherModeSelectOnModeAttributeCallback::CHIPDishwasherModeSelectOnModeAttributeCallback(jobject javaCallback,
-                                                                                                 bool keepAlive) :
-    chip::Callback::Callback<CHIPDishwasherModeSelectClusterOnModeAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
+CHIPDishwasherModeOnModeAttributeCallback::CHIPDishwasherModeOnModeAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPDishwasherModeClusterOnModeAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -23506,7 +23840,7 @@ CHIPDishwasherModeSelectOnModeAttributeCallback::CHIPDishwasherModeSelectOnModeA
     }
 }
 
-CHIPDishwasherModeSelectOnModeAttributeCallback::~CHIPDishwasherModeSelectOnModeAttributeCallback()
+CHIPDishwasherModeOnModeAttributeCallback::~CHIPDishwasherModeOnModeAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -23517,8 +23851,7 @@ CHIPDishwasherModeSelectOnModeAttributeCallback::~CHIPDishwasherModeSelectOnMode
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPDishwasherModeSelectOnModeAttributeCallback::CallbackFn(void * context,
-                                                                 const chip::app::DataModel::Nullable<uint8_t> & value)
+void CHIPDishwasherModeOnModeAttributeCallback::CallbackFn(void * context, const chip::app::DataModel::Nullable<uint8_t> & value)
 {
     chip::DeviceLayer::StackUnlock unlock;
     CHIP_ERROR err = CHIP_NO_ERROR;
@@ -23526,8 +23859,8 @@ void CHIPDishwasherModeSelectOnModeAttributeCallback::CallbackFn(void * context,
     jobject javaCallbackRef;
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-    std::unique_ptr<CHIPDishwasherModeSelectOnModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPDishwasherModeSelectOnModeAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPDishwasherModeOnModeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPDishwasherModeOnModeAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -23554,9 +23887,9 @@ void CHIPDishwasherModeSelectOnModeAttributeCallback::CallbackFn(void * context,
     env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
 }
 
-CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback::CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback(
+CHIPDishwasherModeGeneratedCommandListAttributeCallback::CHIPDishwasherModeGeneratedCommandListAttributeCallback(
     jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPDishwasherModeSelectClusterGeneratedCommandListAttributeCallbackType>(CallbackFn, this),
+    chip::Callback::Callback<CHIPDishwasherModeClusterGeneratedCommandListAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -23573,7 +23906,7 @@ CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback::CHIPDishwasherMod
     }
 }
 
-CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback::~CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback()
+CHIPDishwasherModeGeneratedCommandListAttributeCallback::~CHIPDishwasherModeGeneratedCommandListAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -23584,7 +23917,7 @@ CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback::~CHIPDishwasherMo
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
+void CHIPDishwasherModeGeneratedCommandListAttributeCallback::CallbackFn(
     void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
@@ -23594,8 +23927,8 @@ void CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPDishwasherModeGeneratedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPDishwasherModeGeneratedCommandListAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -23625,151 +23958,9 @@ void CHIPDishwasherModeSelectGeneratedCommandListAttributeCallback::CallbackFn(
     env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
 }
 
-CHIPDishwasherModeSelectAcceptedCommandListAttributeCallback::CHIPDishwasherModeSelectAcceptedCommandListAttributeCallback(
-    jobject javaCallback, bool keepAlive) :
-    chip::Callback::Callback<CHIPDishwasherModeSelectClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPDishwasherModeSelectAcceptedCommandListAttributeCallback::~CHIPDishwasherModeSelectAcceptedCommandListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPDishwasherModeSelectAcceptedCommandListAttributeCallback::CallbackFn(
-    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPDishwasherModeSelectAcceptedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPDishwasherModeSelectAcceptedCommandListAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPDishwasherModeSelectEventListAttributeCallback::CHIPDishwasherModeSelectEventListAttributeCallback(jobject javaCallback,
-                                                                                                       bool keepAlive) :
-    chip::Callback::Callback<CHIPDishwasherModeSelectClusterEventListAttributeCallbackType>(CallbackFn, this),
-    keepAlive(keepAlive)
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-        return;
-    }
-
-    javaCallbackRef = env->NewGlobalRef(javaCallback);
-    if (javaCallbackRef == nullptr)
-    {
-        ChipLogError(Zcl, "Could not create global reference for Java callback");
-    }
-}
-
-CHIPDishwasherModeSelectEventListAttributeCallback::~CHIPDishwasherModeSelectEventListAttributeCallback()
-{
-    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    if (env == nullptr)
-    {
-        ChipLogError(Zcl, "Could not delete global reference for Java callback");
-        return;
-    }
-    env->DeleteGlobalRef(javaCallbackRef);
-}
-
-void CHIPDishwasherModeSelectEventListAttributeCallback::CallbackFn(void * context,
-                                                                    const chip::app::DataModel::DecodableList<chip::EventId> & list)
-{
-    chip::DeviceLayer::StackUnlock unlock;
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
-    jobject javaCallbackRef;
-
-    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
-
-    std::unique_ptr<CHIPDishwasherModeSelectEventListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPDishwasherModeSelectEventListAttributeCallback *>(context), maybeDestroy);
-
-    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
-    javaCallbackRef = cppCallback.get()->javaCallbackRef;
-    VerifyOrReturn(javaCallbackRef != nullptr,
-                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
-
-    jmethodID javaMethod;
-    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
-
-    jobject arrayListObj;
-    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
-
-    auto iter_arrayListObj_0 = list.begin();
-    while (iter_arrayListObj_0.Next())
-    {
-        auto & entry_0 = iter_arrayListObj_0.GetValue();
-        jobject newElement_0;
-        std::string newElement_0ClassName     = "java/lang/Long";
-        std::string newElement_0CtorSignature = "(J)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
-                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
-        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
-    }
-
-    env->ExceptionClear();
-    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
-}
-
-CHIPDishwasherModeSelectAttributeListAttributeCallback::CHIPDishwasherModeSelectAttributeListAttributeCallback(jobject javaCallback,
+CHIPDishwasherModeAcceptedCommandListAttributeCallback::CHIPDishwasherModeAcceptedCommandListAttributeCallback(jobject javaCallback,
                                                                                                                bool keepAlive) :
-    chip::Callback::Callback<CHIPDishwasherModeSelectClusterAttributeListAttributeCallbackType>(CallbackFn, this),
+    chip::Callback::Callback<CHIPDishwasherModeClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
     keepAlive(keepAlive)
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
@@ -23786,7 +23977,7 @@ CHIPDishwasherModeSelectAttributeListAttributeCallback::CHIPDishwasherModeSelect
     }
 }
 
-CHIPDishwasherModeSelectAttributeListAttributeCallback::~CHIPDishwasherModeSelectAttributeListAttributeCallback()
+CHIPDishwasherModeAcceptedCommandListAttributeCallback::~CHIPDishwasherModeAcceptedCommandListAttributeCallback()
 {
     JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
     if (env == nullptr)
@@ -23797,7 +23988,147 @@ CHIPDishwasherModeSelectAttributeListAttributeCallback::~CHIPDishwasherModeSelec
     env->DeleteGlobalRef(javaCallbackRef);
 }
 
-void CHIPDishwasherModeSelectAttributeListAttributeCallback::CallbackFn(
+void CHIPDishwasherModeAcceptedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPDishwasherModeAcceptedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPDishwasherModeAcceptedCommandListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPDishwasherModeEventListAttributeCallback::CHIPDishwasherModeEventListAttributeCallback(jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPDishwasherModeClusterEventListAttributeCallbackType>(CallbackFn, this), keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPDishwasherModeEventListAttributeCallback::~CHIPDishwasherModeEventListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPDishwasherModeEventListAttributeCallback::CallbackFn(void * context,
+                                                              const chip::app::DataModel::DecodableList<chip::EventId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPDishwasherModeEventListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPDishwasherModeEventListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPDishwasherModeAttributeListAttributeCallback::CHIPDishwasherModeAttributeListAttributeCallback(jobject javaCallback,
+                                                                                                   bool keepAlive) :
+    chip::Callback::Callback<CHIPDishwasherModeClusterAttributeListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPDishwasherModeAttributeListAttributeCallback::~CHIPDishwasherModeAttributeListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPDishwasherModeAttributeListAttributeCallback::CallbackFn(
     void * context, const chip::app::DataModel::DecodableList<chip::AttributeId> & list)
 {
     chip::DeviceLayer::StackUnlock unlock;
@@ -23807,8 +24138,8 @@ void CHIPDishwasherModeSelectAttributeListAttributeCallback::CallbackFn(
 
     VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
 
-    std::unique_ptr<CHIPDishwasherModeSelectAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
-        reinterpret_cast<CHIPDishwasherModeSelectAttributeListAttributeCallback *>(context), maybeDestroy);
+    std::unique_ptr<CHIPDishwasherModeAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPDishwasherModeAttributeListAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
@@ -24674,12 +25005,22 @@ void CHIPOperationalStateOperationalStateListAttributeCallback::CallbackFn(
         jobject newElement_0_operationalStateID;
         std::string newElement_0_operationalStateIDClassName     = "java/lang/Integer";
         std::string newElement_0_operationalStateIDCtorSignature = "(I)V";
-        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(
-            newElement_0_operationalStateIDClassName.c_str(), newElement_0_operationalStateIDCtorSignature.c_str(),
-            static_cast<uint8_t>(entry_0.operationalStateID), newElement_0_operationalStateID);
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(newElement_0_operationalStateIDClassName.c_str(),
+                                                                      newElement_0_operationalStateIDCtorSignature.c_str(),
+                                                                      entry_0.operationalStateID, newElement_0_operationalStateID);
         jobject newElement_0_operationalStateLabel;
-        LogErrorOnFailure(
-            chip::JniReferences::GetInstance().CharToStringUTF(entry_0.operationalStateLabel, newElement_0_operationalStateLabel));
+        if (!entry_0.operationalStateLabel.HasValue())
+        {
+            chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_0_operationalStateLabel);
+        }
+        else
+        {
+            jobject newElement_0_operationalStateLabelInsideOptional;
+            LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_0.operationalStateLabel.Value(),
+                                                                                 newElement_0_operationalStateLabelInsideOptional));
+            chip::JniReferences::GetInstance().CreateOptional(newElement_0_operationalStateLabelInsideOptional,
+                                                              newElement_0_operationalStateLabel);
+        }
 
         jclass operationalStateStructStructClass_1;
         err = chip::JniReferences::GetInstance().GetClassRef(
@@ -24691,7 +25032,7 @@ void CHIPOperationalStateOperationalStateListAttributeCallback::CallbackFn(
             return;
         }
         jmethodID operationalStateStructStructCtor_1 =
-            env->GetMethodID(operationalStateStructStructClass_1, "<init>", "(Ljava/lang/Integer;Ljava/lang/String;)V");
+            env->GetMethodID(operationalStateStructStructClass_1, "<init>", "(Ljava/lang/Integer;Ljava/util/Optional;)V");
         if (operationalStateStructStructCtor_1 == nullptr)
         {
             ChipLogError(Zcl, "Could not find ChipStructs$OperationalStateClusterOperationalStateStruct constructor");
@@ -24962,6 +25303,607 @@ void CHIPOperationalStateAttributeListAttributeCallback::CallbackFn(
 
     std::unique_ptr<CHIPOperationalStateAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
         reinterpret_cast<CHIPOperationalStateAttributeListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcOperationalStatePhaseListAttributeCallback::CHIPRvcOperationalStatePhaseListAttributeCallback(jobject javaCallback,
+                                                                                                     bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcOperationalStateClusterPhaseListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcOperationalStatePhaseListAttributeCallback::~CHIPRvcOperationalStatePhaseListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcOperationalStatePhaseListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::Nullable<chip::app::DataModel::DecodableList<chip::CharSpan>> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcOperationalStatePhaseListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcOperationalStatePhaseListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    if (list.IsNull())
+    {
+        arrayListObj = nullptr;
+    }
+    else
+    {
+        chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+        auto iter_arrayListObj_1 = list.Value().begin();
+        while (iter_arrayListObj_1.Next())
+        {
+            auto & entry_1 = iter_arrayListObj_1.GetValue();
+            jobject newElement_1;
+            LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_1, newElement_1));
+            chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_1);
+        }
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcOperationalStateCurrentPhaseAttributeCallback::CHIPRvcOperationalStateCurrentPhaseAttributeCallback(jobject javaCallback,
+                                                                                                           bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcOperationalStateClusterCurrentPhaseAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcOperationalStateCurrentPhaseAttributeCallback::~CHIPRvcOperationalStateCurrentPhaseAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcOperationalStateCurrentPhaseAttributeCallback::CallbackFn(void * context,
+                                                                      const chip::app::DataModel::Nullable<uint8_t> & value)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+    std::unique_ptr<CHIPRvcOperationalStateCurrentPhaseAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcOperationalStateCurrentPhaseAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Integer;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject javaValue;
+    if (value.IsNull())
+    {
+        javaValue = nullptr;
+    }
+    else
+    {
+        std::string javaValueClassName     = "java/lang/Integer";
+        std::string javaValueCtorSignature = "(I)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
+                                                                      value.Value(), javaValue);
+    }
+
+    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
+}
+
+CHIPRvcOperationalStateCountdownTimeAttributeCallback::CHIPRvcOperationalStateCountdownTimeAttributeCallback(jobject javaCallback,
+                                                                                                             bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcOperationalStateClusterCountdownTimeAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcOperationalStateCountdownTimeAttributeCallback::~CHIPRvcOperationalStateCountdownTimeAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcOperationalStateCountdownTimeAttributeCallback::CallbackFn(void * context,
+                                                                       const chip::app::DataModel::Nullable<uint32_t> & value)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+    std::unique_ptr<CHIPRvcOperationalStateCountdownTimeAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcOperationalStateCountdownTimeAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/lang/Long;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject javaValue;
+    if (value.IsNull())
+    {
+        javaValue = nullptr;
+    }
+    else
+    {
+        std::string javaValueClassName     = "java/lang/Long";
+        std::string javaValueCtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(javaValueClassName.c_str(), javaValueCtorSignature.c_str(),
+                                                                       value.Value(), javaValue);
+    }
+
+    env->CallVoidMethod(javaCallbackRef, javaMethod, javaValue);
+}
+
+CHIPRvcOperationalStateOperationalStateListAttributeCallback::CHIPRvcOperationalStateOperationalStateListAttributeCallback(
+    jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcOperationalStateClusterOperationalStateListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcOperationalStateOperationalStateListAttributeCallback::~CHIPRvcOperationalStateOperationalStateListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcOperationalStateOperationalStateListAttributeCallback::CallbackFn(
+    void * context,
+    const chip::app::DataModel::DecodableList<
+        chip::app::Clusters::RvcOperationalState::Structs::OperationalStateStruct::DecodableType> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcOperationalStateOperationalStateListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcOperationalStateOperationalStateListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        jobject newElement_0_operationalStateID;
+        std::string newElement_0_operationalStateIDClassName     = "java/lang/Integer";
+        std::string newElement_0_operationalStateIDCtorSignature = "(I)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint8_t>(newElement_0_operationalStateIDClassName.c_str(),
+                                                                      newElement_0_operationalStateIDCtorSignature.c_str(),
+                                                                      entry_0.operationalStateID, newElement_0_operationalStateID);
+        jobject newElement_0_operationalStateLabel;
+        if (!entry_0.operationalStateLabel.HasValue())
+        {
+            chip::JniReferences::GetInstance().CreateOptional(nullptr, newElement_0_operationalStateLabel);
+        }
+        else
+        {
+            jobject newElement_0_operationalStateLabelInsideOptional;
+            LogErrorOnFailure(chip::JniReferences::GetInstance().CharToStringUTF(entry_0.operationalStateLabel.Value(),
+                                                                                 newElement_0_operationalStateLabelInsideOptional));
+            chip::JniReferences::GetInstance().CreateOptional(newElement_0_operationalStateLabelInsideOptional,
+                                                              newElement_0_operationalStateLabel);
+        }
+
+        jclass operationalStateStructStructClass_1;
+        err = chip::JniReferences::GetInstance().GetClassRef(
+            env, "chip/devicecontroller/ChipStructs$RvcOperationalStateClusterOperationalStateStruct",
+            operationalStateStructStructClass_1);
+        if (err != CHIP_NO_ERROR)
+        {
+            ChipLogError(Zcl, "Could not find class ChipStructs$RvcOperationalStateClusterOperationalStateStruct");
+            return;
+        }
+        jmethodID operationalStateStructStructCtor_1 =
+            env->GetMethodID(operationalStateStructStructClass_1, "<init>", "(Ljava/lang/Integer;Ljava/util/Optional;)V");
+        if (operationalStateStructStructCtor_1 == nullptr)
+        {
+            ChipLogError(Zcl, "Could not find ChipStructs$RvcOperationalStateClusterOperationalStateStruct constructor");
+            return;
+        }
+
+        newElement_0 = env->NewObject(operationalStateStructStructClass_1, operationalStateStructStructCtor_1,
+                                      newElement_0_operationalStateID, newElement_0_operationalStateLabel);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcOperationalStateGeneratedCommandListAttributeCallback::CHIPRvcOperationalStateGeneratedCommandListAttributeCallback(
+    jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcOperationalStateClusterGeneratedCommandListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcOperationalStateGeneratedCommandListAttributeCallback::~CHIPRvcOperationalStateGeneratedCommandListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcOperationalStateGeneratedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcOperationalStateGeneratedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcOperationalStateGeneratedCommandListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcOperationalStateAcceptedCommandListAttributeCallback::CHIPRvcOperationalStateAcceptedCommandListAttributeCallback(
+    jobject javaCallback, bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcOperationalStateClusterAcceptedCommandListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcOperationalStateAcceptedCommandListAttributeCallback::~CHIPRvcOperationalStateAcceptedCommandListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcOperationalStateAcceptedCommandListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::CommandId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcOperationalStateAcceptedCommandListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcOperationalStateAcceptedCommandListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcOperationalStateEventListAttributeCallback::CHIPRvcOperationalStateEventListAttributeCallback(jobject javaCallback,
+                                                                                                     bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcOperationalStateClusterEventListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcOperationalStateEventListAttributeCallback::~CHIPRvcOperationalStateEventListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcOperationalStateEventListAttributeCallback::CallbackFn(void * context,
+                                                                   const chip::app::DataModel::DecodableList<chip::EventId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcOperationalStateEventListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcOperationalStateEventListAttributeCallback *>(context), maybeDestroy);
+
+    // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
+    javaCallbackRef = cppCallback.get()->javaCallbackRef;
+    VerifyOrReturn(javaCallbackRef != nullptr,
+                   ChipLogProgress(Zcl, "Early return from attribute callback since Java callback is null"));
+
+    jmethodID javaMethod;
+    err = chip::JniReferences::GetInstance().FindMethod(env, javaCallbackRef, "onSuccess", "(Ljava/util/List;)V", &javaMethod);
+    VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(Zcl, "Could not find onSuccess() method"));
+
+    jobject arrayListObj;
+    chip::JniReferences::GetInstance().CreateArrayList(arrayListObj);
+
+    auto iter_arrayListObj_0 = list.begin();
+    while (iter_arrayListObj_0.Next())
+    {
+        auto & entry_0 = iter_arrayListObj_0.GetValue();
+        jobject newElement_0;
+        std::string newElement_0ClassName     = "java/lang/Long";
+        std::string newElement_0CtorSignature = "(J)V";
+        chip::JniReferences::GetInstance().CreateBoxedObject<uint32_t>(newElement_0ClassName.c_str(),
+                                                                       newElement_0CtorSignature.c_str(), entry_0, newElement_0);
+        chip::JniReferences::GetInstance().AddToList(arrayListObj, newElement_0);
+    }
+
+    env->ExceptionClear();
+    env->CallVoidMethod(javaCallbackRef, javaMethod, arrayListObj);
+}
+
+CHIPRvcOperationalStateAttributeListAttributeCallback::CHIPRvcOperationalStateAttributeListAttributeCallback(jobject javaCallback,
+                                                                                                             bool keepAlive) :
+    chip::Callback::Callback<CHIPRvcOperationalStateClusterAttributeListAttributeCallbackType>(CallbackFn, this),
+    keepAlive(keepAlive)
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+        return;
+    }
+
+    javaCallbackRef = env->NewGlobalRef(javaCallback);
+    if (javaCallbackRef == nullptr)
+    {
+        ChipLogError(Zcl, "Could not create global reference for Java callback");
+    }
+}
+
+CHIPRvcOperationalStateAttributeListAttributeCallback::~CHIPRvcOperationalStateAttributeListAttributeCallback()
+{
+    JNIEnv * env = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    if (env == nullptr)
+    {
+        ChipLogError(Zcl, "Could not delete global reference for Java callback");
+        return;
+    }
+    env->DeleteGlobalRef(javaCallbackRef);
+}
+
+void CHIPRvcOperationalStateAttributeListAttributeCallback::CallbackFn(
+    void * context, const chip::app::DataModel::DecodableList<chip::AttributeId> & list)
+{
+    chip::DeviceLayer::StackUnlock unlock;
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    JNIEnv * env   = chip::JniReferences::GetInstance().GetEnvForCurrentThread();
+    jobject javaCallbackRef;
+
+    VerifyOrReturn(env != nullptr, ChipLogError(Zcl, "Could not get JNI env"));
+
+    std::unique_ptr<CHIPRvcOperationalStateAttributeListAttributeCallback, decltype(&maybeDestroy)> cppCallback(
+        reinterpret_cast<CHIPRvcOperationalStateAttributeListAttributeCallback *>(context), maybeDestroy);
 
     // It's valid for javaCallbackRef to be nullptr if the Java code passed in a null callback.
     javaCallbackRef = cppCallback.get()->javaCallbackRef;
